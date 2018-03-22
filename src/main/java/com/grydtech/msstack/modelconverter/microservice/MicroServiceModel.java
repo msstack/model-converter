@@ -7,12 +7,14 @@ import java.util.List;
 
 public class MicroServiceModel extends Model {
     private String serviceName;
-    private List<ClassSchema> classSchemas;
+    private List<ClassSchema> entityClasses;
+    private List<ClassSchema> eventClasses;
     private List<Handler> handlers;
 
     public MicroServiceModel(String serviceName) {
         this.serviceName = serviceName;
-        this.classSchemas = new ArrayList<ClassSchema>();
+        this.entityClasses = new ArrayList<ClassSchema>();
+        this.eventClasses = new ArrayList<ClassSchema>();
         this.handlers = new ArrayList<Handler>();
     }
 
@@ -24,20 +26,32 @@ public class MicroServiceModel extends Model {
         this.serviceName = serviceName;
     }
 
-    public List<ClassSchema> getClassSchemas() {
-        return classSchemas;
+    public List<ClassSchema> getEntityClasses() {
+        return entityClasses;
+    }
+
+    public void setEntityClasses(List<ClassSchema> entityClasses) {
+        this.entityClasses = entityClasses;
+    }
+
+    public List<ClassSchema> getEventClasses() {
+        return eventClasses;
+    }
+
+    public void setEventClasses(List<ClassSchema> eventClasses) {
+        this.eventClasses = eventClasses;
     }
 
     public List<Handler> getHandlers() {
         return handlers;
     }
 
-    public void setClassSchemas(List<ClassSchema> classSchemas) {
-        this.classSchemas = classSchemas;
+    public void addEntityClass(ClassSchema entityClass) {
+        this.entityClasses.add(entityClass);
     }
 
-    public void addClassSchema (ClassSchema classSchema) {
-        this.classSchemas.add(classSchema);
+    public void addEventClass(ClassSchema eventClass) {
+        this.eventClasses.add(eventClass);
     }
 
     public void addHandler(Handler handler) {

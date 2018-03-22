@@ -23,25 +23,25 @@ public class ModelConverterEntityBased implements ModelConverter {
             if (microServiceModelMap.containsKey(businessContract.getEntityId())) {
                 microServiceModel = microServiceModelMap.get(businessContract.getEntityId());
             } else {
-                microServiceModel = new MicroServiceModel(businessContract.getEntity().getName() + "_service");
+                microServiceModel = new MicroServiceModel(businessContract.getEntity().getName() + "Service");
                 microServiceModel.setVersion(businessModel.getVersion());
-                microServiceModel.setClassSchemas(this.extractEntities(businessContract.getEntity()));
+                microServiceModel.setEntityClasses(this.extractEntities(businessContract.getEntity()));
                 microServiceModelMap.put(businessContract.getEntityId(), microServiceModel);
             }
 
-            Handler handler = new Handler(businessContract.getHandler().getName() + "_handler", businessContract.getHandler().getType());
+            Handler handler = new Handler(businessContract.getHandler().getName() + "Handler", businessContract.getHandler().getType());
 
             // get events from business contract and update class schemas and handlers according to that
             for (String event: businessContract.getEvents()) {
                 // create class for each event
-                ClassSchema classSchema = new ClassSchema(event + "_event");
-                microServiceModel.addClassSchema(classSchema);
+                ClassSchema classSchema = new ClassSchema(event + "Event");
+                microServiceModel.addEventClass(classSchema);
 
                 Attribute attribute = new Attribute(event, classSchema.getName());
                 attribute.isArray = false;
 
                 // add event apply method to base entity (eg: void apply(OrderCreatedEvent event))
-                ClassSchema baseEntity = microServiceModel.getClassSchemas().get(0);
+                ClassSchema baseEntity = microServiceModel.getEntityClasses().get(0);
                 Method method = new Method("apply");
                 method.addInput(attribute);
 
@@ -66,7 +66,7 @@ public class ModelConverterEntityBased implements ModelConverter {
         while (!entities.isEmpty()) {
             BusinessEntity entity = entities.get(0);
 
-            ClassSchema classSchema = new ClassSchema(entity.getName() + "_entity");
+            ClassSchema classSchema = new ClassSchema(entity.getName() + "Entity");
 
             // create attributes for business entity fields
             for (EntityField field: entity.getFields()) {
