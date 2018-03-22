@@ -16,11 +16,10 @@ public class Main {
     public static void main(String[] args) {
         String method = args[0];
         String inputFilePath = args[1];
-        String outputFilePath = args[2];
         File inputFile = new File(inputFilePath);
-        File outputFile = new File(outputFilePath);
+        String outputPath = null;
         try {
-            outputFile.createNewFile();
+            outputPath = new File(".").getCanonicalPath();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -29,10 +28,17 @@ public class Main {
         if (method.equals("b2m")){
             BusinessModel businessModel = modelReader.readBusinessModel(inputFile);
             List<MicroServiceModel> microServiceModels = modelConverter.convertToMicroServiceModel(businessModel);
-            modelWriter.writeModel(outputFile, microServiceModels.get(0));
+            for (MicroServiceModel microServiceModel: microServiceModels) {
+                File outputFile = new File(outputPath + File.separator + microServiceModel.getServiceName() + ".json");
+                try {
+                    outputFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                modelWriter.writeModel(outputFile, microServiceModel);
+            }
         } else if (method.equals("m2b")) {
             MicroServiceModel microServiceModel = modelReader.readMicroServiceModel(inputFile);
-            modelWriter.writeModel(outputFile, microServiceModel);
         }
     }
 }
