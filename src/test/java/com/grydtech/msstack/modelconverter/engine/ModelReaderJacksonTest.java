@@ -1,11 +1,13 @@
 package com.grydtech.msstack.modelconverter.engine;
 
 import com.grydtech.msstack.modelconverter.business.BusinessModel;
+import com.grydtech.msstack.modelconverter.microservice.MicroServiceModel;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.List;
 
 public class ModelReaderJacksonTest {
     @Test
@@ -18,7 +20,8 @@ public class ModelReaderJacksonTest {
         }
 
         BusinessModel businessModel = new ModelReaderJackson().readBusinessModel(jsonFile);
+        List<MicroServiceModel> microServiceModels = new ModelConverterEntityBased().convertToMicroServiceModel(businessModel);
 
-        Assert.assertEquals(businessModel.getVersion(), "0.0.1");
+        Assert.assertNotNull(microServiceModels.get(0));
     }
 }

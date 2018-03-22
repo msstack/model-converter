@@ -7,7 +7,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BusinessContract {
     private String id;
-    private String name;
     private String entityId;
     private ContractHandler handler;
     private List<String> events;
@@ -19,14 +18,6 @@ public class BusinessContract {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getEntityId() {
