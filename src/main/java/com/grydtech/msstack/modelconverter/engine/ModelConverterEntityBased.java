@@ -39,7 +39,6 @@ public class ModelConverterEntityBased implements ModelConverter {
 
                 Attribute attribute = new Attribute(event, classSchema.getName());
                 attribute.isArray = false;
-                attribute.isSubEntity = true;
 
                 // add event apply method to base entity (eg: void apply(OrderCreatedEvent event))
                 ClassSchema baseEntity = microServiceModel.getClassSchemas().get(0);
@@ -88,10 +87,8 @@ public class ModelConverterEntityBased implements ModelConverter {
 
                 if (subEntity != null) {
                     entities.add(subEntity);
-                    attribute.isSubEntity = true;
                     attribute.setType(subEntity.getName());
                 } else {
-                    attribute.isSubEntity = false;
                     attribute.setType(type);
                 }
 

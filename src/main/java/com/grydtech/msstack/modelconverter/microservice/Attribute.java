@@ -4,7 +4,6 @@ public class Attribute {
     private String name;
     private String type;
     public boolean isArray;
-    public boolean isSubEntity;
 
     public Attribute(String name) {
         this.name = name;
