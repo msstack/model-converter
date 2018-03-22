@@ -2,24 +2,25 @@ package com.grydtech.msstack.modelconverter.business;
 
 import com.grydtech.msstack.modelconverter.common.Model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BusinessModel extends Model {
-    private List<BusinessEntity> businessEntities;
-    private List<BusinessContract> businessContracts;
+    private List<BusinessEntity> entities;
+    private List<BusinessContract> contracts;
 
-    public BusinessModel(String version) {
-        super(version);
-        businessEntities = new ArrayList<BusinessEntity>();
-        businessContracts = new ArrayList<BusinessContract>();
+    public List<BusinessEntity> getEntities() {
+        return entities;
     }
 
-    public List<BusinessEntity> getBusinessEntities() {
-        return businessEntities;
+    public void setEntities(List<BusinessEntity> entities) {
+        this.entities = entities;
     }
 
-    public List<BusinessContract> getBusinessContracts() {
-        return businessContracts;
+    public List<BusinessContract> getContracts() {
+        return contracts;
+    }
+
+    public void setContracts(List<BusinessContract> contracts) {
+        this.contracts = contracts;
     }
 }
