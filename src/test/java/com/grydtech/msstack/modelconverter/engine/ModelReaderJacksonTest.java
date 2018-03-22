@@ -18,6 +18,7 @@ public class ModelReaderJacksonTest {
         }
 
         BusinessModel businessModel = new ModelReaderJackson().readBusinessModel(jsonFile);
+
         Assert.assertEquals(businessModel.getVersion(), "0.0.1");
     }
 }

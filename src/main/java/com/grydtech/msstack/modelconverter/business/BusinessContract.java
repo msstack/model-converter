@@ -1,7 +1,10 @@
 package com.grydtech.msstack.modelconverter.business;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BusinessContract {
     private String id;
     private String name;

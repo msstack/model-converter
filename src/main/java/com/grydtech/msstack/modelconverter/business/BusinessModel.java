@@ -2,7 +2,6 @@ package com.grydtech.msstack.modelconverter.business;
 
 import com.grydtech.msstack.modelconverter.common.Model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BusinessModel extends Model {
