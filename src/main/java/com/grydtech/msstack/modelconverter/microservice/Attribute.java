@@ -3,7 +3,6 @@ package com.grydtech.msstack.modelconverter.microservice;
 public class Attribute {
     private String name;
     private String type;
-    public boolean isArray;
 
     public Attribute(String name) {
         this.name = name;

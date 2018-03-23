@@ -4,6 +4,7 @@ import com.grydtech.msstack.modelconverter.business.BusinessContract;
 import com.grydtech.msstack.modelconverter.business.BusinessEntity;
 import com.grydtech.msstack.modelconverter.business.BusinessModel;
 import com.grydtech.msstack.modelconverter.business.EntityField;
+import com.grydtech.msstack.modelconverter.common.Constants;
 import com.grydtech.msstack.modelconverter.microservice.*;
 
 import java.util.ArrayList;
@@ -23,31 +24,29 @@ public class ModelConverterEntityBased implements ModelConverter {
             if (microServiceModelMap.containsKey(businessContract.getEntityId())) {
                 microServiceModel = microServiceModelMap.get(businessContract.getEntityId());
             } else {
-                microServiceModel = new MicroServiceModel(businessContract.getEntity().getName() + "Service");
+                microServiceModel = new MicroServiceModel(businessContract.getEntity().getName() + Constants.SERVICE_SUFFIX);
                 microServiceModel.setVersion(businessModel.getVersion());
                 microServiceModel.setEntityClasses(this.extractEntities(businessContract.getEntity()));
                 microServiceModelMap.put(businessContract.getEntityId(), microServiceModel);
             }
 
-            Handler handler = new Handler(businessContract.getHandler().getName() + "Handler", businessContract.getHandler().getType());
+            Handler handler = new Handler(businessContract.getHandler().getName() + Constants.HANDLER_CLASS_SUFFIX, businessContract.getHandler().getType());
 
             // get events from business contract and update class schemas and handlers according to that
             for (String event: businessContract.getEvents()) {
                 // create class for each event
-                ClassSchema classSchema = new ClassSchema(event + "Event");
-                microServiceModel.addEventClass(classSchema);
-
-                Attribute attribute = new Attribute(event, classSchema.getName());
-                attribute.isArray = false;
+                ClassSchema eventClass = new ClassSchema(event + Constants.EVENT_CLASS_SUFFIX);
+                microServiceModel.addEventClass(eventClass);
 
                 // add event apply method to base entity (eg: void apply(OrderCreatedEvent event))
-                ClassSchema baseEntity = microServiceModel.getEntityClasses().get(0);
+                ClassSchema baseEntityClass = microServiceModel.getEntityClasses().get(0);
+                Attribute attribute = new Attribute(event, eventClass.getName());
                 Method method = new Method("apply");
                 method.addInput(attribute);
+                baseEntityClass.addMethod(method);
 
                 // to wire event emitting inside handler
                 handler.addEventGenerate(attribute);
-                baseEntity.addMethod(method);
             }
 
             microServiceModel.addHandler(handler);
@@ -65,38 +64,18 @@ public class ModelConverterEntityBased implements ModelConverter {
 
         while (!entities.isEmpty()) {
             BusinessEntity entity = entities.get(0);
+            entities.addAll(entity.getSubEntities());
 
-            ClassSchema classSchema = new ClassSchema(entity.getName() + "Entity");
+            ClassSchema classSchema = new ClassSchema(entity.getName() + Constants.ENTITY_CLASS_SUFFIX);
 
             // create attributes for business entity fields
             for (EntityField field: entity.getFields()) {
-                Attribute attribute = new Attribute(field.getName());
-                String type;
-
-                if (field.getType().contains("array")) {
-                    attribute.isArray = true;
-                    int pos1 = field.getType().indexOf("<");
-                    int pos2 = field.getType().indexOf(">");
-                    type = field.getType().substring(pos1 + 1, pos2);
-                } else {
-                    attribute.isArray = false;
-                    type = field.getType();
-                }
-
-                BusinessEntity subEntity = field.getSubEntity();
-
-                if (subEntity != null) {
-                    entities.add(subEntity);
-                    attribute.setType(subEntity.getName());
-                } else {
-                    attribute.setType(type);
-                }
-
+                Attribute attribute = new Attribute(field.getName(), field.getType());
                 classSchema.addAttribute(attribute);
             }
 
-            entities.remove(0);
             classSchemas.add(classSchema);
+            entities.remove(0);
         }
 
         return classSchemas;
