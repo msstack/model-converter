@@ -1,6 +1,7 @@
 package com.grydtech.msstack.modelconverter.business;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class BusinessEntity {
@@ -11,6 +12,7 @@ public class BusinessEntity {
     // ToDo: Read keys is not implemented
 
     public BusinessEntity() {
+        this.fields = new ArrayList<EntityField>();
         this.subEntities = new ArrayList<BusinessEntity>();
     }
 
@@ -34,19 +36,23 @@ public class BusinessEntity {
         return fields;
     }
 
-    public void setFields(List<EntityField> fields) {
-        this.fields = fields;
-    }
-
     public List<BusinessEntity> getSubEntities() {
         return subEntities;
     }
 
-    public void setSubEntities(List<BusinessEntity> subEntities) {
-        this.subEntities = subEntities;
+    public void addField(EntityField field) {
+        this.fields.add(field);
+    }
+
+    public void addFieldCollection(Collection<EntityField> fields) {
+        this.fields.addAll(fields);
     }
 
     public void addSubEntity(BusinessEntity subEntity) {
         this.subEntities.add(subEntity);
+    }
+
+    public void addSubEntityCollection(Collection<BusinessEntity> subEntities) {
+        this.subEntities.addAll(subEntities);
     }
 }

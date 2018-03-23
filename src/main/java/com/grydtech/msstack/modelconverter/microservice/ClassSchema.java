@@ -1,6 +1,7 @@
 package com.grydtech.msstack.modelconverter.microservice;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ClassSchema {
@@ -30,7 +31,15 @@ public class ClassSchema {
         this.attributes.add(attribute);
     }
 
+    public void addAttributeCollection(Collection<Attribute> attributes) {
+        this.attributes.addAll(attributes);
+    }
+
     public void addMethod(Method method) {
         this.methods.add(method);
+    }
+
+    public void addMethodCollection(Collection<Method> methods) {
+        this.methods.addAll(methods);
     }
 }
