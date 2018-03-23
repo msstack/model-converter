@@ -25,7 +25,7 @@ public class Main {
         }
 
         // ToDo: file write is not implemented
-        if (method.equals("b2m")){
+        if ("b2m".equals(method)){
             BusinessModel businessModel = modelReader.readBusinessModel(inputFile);
             List<MicroServiceModel> microServiceModels = modelConverter.convertToMicroServiceModel(businessModel);
             for (MicroServiceModel microServiceModel: microServiceModels) {
@@ -37,7 +37,7 @@ public class Main {
                 }
                 modelWriter.writeModel(outputFile, microServiceModel);
             }
-        } else if (method.equals("m2b")) {
+        } else if ("m2b".equals(method)) {
             MicroServiceModel microServiceModel = modelReader.readMicroServiceModel(inputFile);
         }
     }
