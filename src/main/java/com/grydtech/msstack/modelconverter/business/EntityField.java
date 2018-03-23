@@ -6,9 +6,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class EntityField {
     private String name;
     private String type;
-    private BusinessEntity subEntity;
-    // ToDo: Field validation not added (eg: isIdentifier, isUnique)
 
+    // ToDo: Field validation not added (eg: isIdentifier, isUnique)
 
     public String getName() {
         return name;
@@ -26,11 +25,4 @@ public class EntityField {
         this.type = type;
     }
 
-    public BusinessEntity getSubEntity() {
-        return subEntity;
-    }
-
-    public void setSubEntity(BusinessEntity subEntity) {
-        this.subEntity = subEntity;
-    }
 }

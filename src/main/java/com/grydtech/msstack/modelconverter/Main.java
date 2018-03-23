@@ -38,7 +38,7 @@ public class Main {
                 modelWriter.writeModel(outputFile, microServiceModel);
             }
         } else if ("m2b".equals(method)) {
-            MicroServiceModel microServiceModel = modelReader.readMicroServiceModel(inputFile);
+            throw new UnsupportedOperationException();
         }
     }
 }
