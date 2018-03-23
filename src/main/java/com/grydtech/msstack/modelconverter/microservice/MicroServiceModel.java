@@ -3,19 +3,20 @@ package com.grydtech.msstack.modelconverter.microservice;
 import com.grydtech.msstack.modelconverter.common.Model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MicroServiceModel extends Model {
     private String serviceName;
     private List<ClassSchema> entityClasses;
     private List<ClassSchema> eventClasses;
-    private List<Handler> handlers;
+    private List<HandlerSchema> handlers;
 
     public MicroServiceModel(String serviceName) {
         this.serviceName = serviceName;
         this.entityClasses = new ArrayList<ClassSchema>();
         this.eventClasses = new ArrayList<ClassSchema>();
-        this.handlers = new ArrayList<Handler>();
+        this.handlers = new ArrayList<HandlerSchema>();
     }
 
     public String getServiceName() {
@@ -30,19 +31,11 @@ public class MicroServiceModel extends Model {
         return entityClasses;
     }
 
-    public void setEntityClasses(List<ClassSchema> entityClasses) {
-        this.entityClasses = entityClasses;
-    }
-
     public List<ClassSchema> getEventClasses() {
         return eventClasses;
     }
 
-    public void setEventClasses(List<ClassSchema> eventClasses) {
-        this.eventClasses = eventClasses;
-    }
-
-    public List<Handler> getHandlers() {
+    public List<HandlerSchema> getHandlers() {
         return handlers;
     }
 
@@ -50,12 +43,23 @@ public class MicroServiceModel extends Model {
         this.entityClasses.add(entityClass);
     }
 
+    public void addEntityClassCollection(Collection<ClassSchema> entityClasses) {
+        this.entityClasses.addAll(entityClasses);
+    }
+
     public void addEventClass(ClassSchema eventClass) {
         this.eventClasses.add(eventClass);
     }
 
-    public void addHandler(Handler handler) {
+    public void addEventClassCollection(Collection<ClassSchema> eventClasses) {
+        this.eventClasses.addAll(eventClasses);
+    }
+
+    public void addHandler(HandlerSchema handler) {
         this.handlers.add(handler);
     }
 
+    public void addHandlerCollection(Collection<HandlerSchema> handlers) {
+        this.handlers.addAll(handlers);
+    }
 }

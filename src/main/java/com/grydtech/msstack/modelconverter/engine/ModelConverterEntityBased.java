@@ -26,11 +26,11 @@ public class ModelConverterEntityBased implements ModelConverter {
             } else {
                 microServiceModel = new MicroServiceModel(businessContract.getEntity().getName() + Constants.SERVICE_SUFFIX);
                 microServiceModel.setVersion(businessModel.getVersion());
-                microServiceModel.setEntityClasses(this.extractEntities(businessContract.getEntity()));
+                microServiceModel.addEntityClassCollection(this.extractEntities(businessContract.getEntity()));
                 microServiceModelMap.put(businessContract.getEntityId(), microServiceModel);
             }
 
-            Handler handler = new Handler(businessContract.getHandler().getName() + Constants.HANDLER_CLASS_SUFFIX, businessContract.getHandler().getType());
+            HandlerSchema handler = new HandlerSchema(businessContract.getHandler().getName() + Constants.HANDLER_CLASS_SUFFIX, businessContract.getHandler().getType());
 
             // get events from business contract and update class schemas and handlers according to that
             for (String event: businessContract.getEvents()) {
@@ -46,7 +46,7 @@ public class ModelConverterEntityBased implements ModelConverter {
                 baseEntityClass.addMethod(method);
 
                 // to wire event emitting inside handler
-                handler.addEventGenerate(attribute);
+                handler.addEvent(attribute);
             }
 
             microServiceModel.addHandler(handler);

@@ -1,19 +1,20 @@
 package com.grydtech.msstack.modelconverter.microservice;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class Handler {
+public class HandlerSchema {
     private String name;
     private String type;
     private Attribute consume;
     private Attribute produce;
-    private List<Attribute> eventsGenerate;
+    private List<Attribute> events;
 
-    public Handler(String name, String type) {
+    public HandlerSchema(String name, String type) {
         this.name = name;
         this.type = type;
-        this.eventsGenerate = new ArrayList<Attribute>();
+        this.events = new ArrayList<Attribute>();
     }
 
     public String getName() {
@@ -48,11 +49,15 @@ public class Handler {
         this.produce = produce;
     }
 
-    public List<Attribute> getEventsGenerate() {
-        return eventsGenerate;
+    public List<Attribute> getEvents() {
+        return events;
     }
 
-    public void addEventGenerate(Attribute event) {
-        this.eventsGenerate.add(event);
+    public void addEvent(Attribute event) {
+        this.events.add(event);
+    }
+
+    public void addEventCollection(Collection<Attribute> events) {
+        this.events.addAll(events);
     }
 }

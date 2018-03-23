@@ -1,6 +1,7 @@
 package com.grydtech.msstack.modelconverter.microservice;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Method {
@@ -35,5 +36,9 @@ public class Method {
 
     public void addInput(Attribute attribute) {
         this.inputs.add(attribute);
+    }
+
+    public void addInputCollection(Collection<Attribute> inputs) {
+        this.inputs.addAll(inputs);
     }
 }

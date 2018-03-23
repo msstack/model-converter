@@ -2,6 +2,8 @@ package com.grydtech.msstack.modelconverter.business;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -11,6 +13,10 @@ public class BusinessContract {
     private ContractHandler handler;
     private List<String> events;
     private BusinessEntity entity;
+
+    public BusinessContract() {
+        this.events = new ArrayList<String>();
+    }
 
     public String getId() {
         return id;
@@ -40,15 +46,19 @@ public class BusinessContract {
         return events;
     }
 
-    public void setEvents(List<String> events) {
-        this.events = events;
-    }
-
     public BusinessEntity getEntity() {
         return entity;
     }
 
     public void setEntity(BusinessEntity entity) {
         this.entity = entity;
+    }
+
+    public void addEvent(String event) {
+        this.events.add(event);
+    }
+
+    public void addEventCollection(Collection<String> events) {
+        this.events.addAll(events);
     }
 }
