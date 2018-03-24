@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Constants {
+
     public final static String SERVICE_SUFFIX = "_service";
     public final static String HANDLER_CLASS_SUFFIX = "_handler";
     public final static String ENTITY_CLASS_SUFFIX = "_entity";
     public final static String EVENT_CLASS_SUFFIX = "_event";
+    public final static List<String> HANDLER_TYPES = new ArrayList<>();
     public final static List<String> BASE_TYPES = new ArrayList<>();
 
     static {
@@ -17,7 +19,13 @@ public class Constants {
         BASE_TYPES.add("long");
         BASE_TYPES.add("float");
         BASE_TYPES.add("boolean");
+
+        HANDLER_TYPES.add("command");
+        HANDLER_TYPES.add("query");
+        HANDLER_TYPES.add("event");
+
     }
 
-    private Constants(){}
+    private Constants() {
+    }
 }

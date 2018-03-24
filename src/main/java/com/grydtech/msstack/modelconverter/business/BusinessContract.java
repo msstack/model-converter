@@ -8,14 +8,19 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BusinessContract {
+
     private String id;
     private String entityId;
     private ContractHandler handler;
+    private ContractRequest request;
+    private ContractResponse response;
     private List<String> events;
     private BusinessEntity entity;
+    private String requestId;
+    private String responseId;
 
     public BusinessContract() {
-        this.events = new ArrayList<String>();
+        this.events = new ArrayList<>();
     }
 
     public String getId() {
@@ -61,4 +66,37 @@ public class BusinessContract {
     public void addEventCollection(Collection<String> events) {
         this.events.addAll(events);
     }
+
+    public ContractRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(ContractRequest request) {
+        this.request = request;
+    }
+
+    public ContractResponse getResponse() {
+        return response;
+    }
+
+    public void setResponse(ContractResponse response) {
+        this.response = response;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public String getResponseId() {
+        return responseId;
+    }
+
+    public void setResponseId(String responseId) {
+        this.responseId = responseId;
+    }
+
 }

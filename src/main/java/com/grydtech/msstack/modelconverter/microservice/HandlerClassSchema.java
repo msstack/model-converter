@@ -5,9 +5,10 @@ import java.util.Collection;
 import java.util.List;
 
 public class HandlerClassSchema extends ClassSchema {
+
     private String type;
-    private Attribute consume;
-    private Attribute produce;
+    private RequestClassSchema consume;
+    private ResponseClassSchema produce;
     private List<String> events;
 
     public HandlerClassSchema(String name, String type) {
@@ -24,19 +25,19 @@ public class HandlerClassSchema extends ClassSchema {
         this.type = type;
     }
 
-    public Attribute getConsume() {
+    public RequestClassSchema getConsume() {
         return consume;
     }
 
-    public void setConsume(Attribute consume) {
+    public void setConsume(RequestClassSchema consume) {
         this.consume = consume;
     }
 
-    public Attribute getProduce() {
+    public ResponseClassSchema getProduce() {
         return produce;
     }
 
-    public void setProduce(Attribute produce) {
+    public void setProduce(ResponseClassSchema produce) {
         this.produce = produce;
     }
 
