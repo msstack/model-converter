@@ -67,6 +67,11 @@ public class ModelConverterEntityBased implements ModelConverter {
             // create attributes for business entity fields
             for (EntityField field : entity.getFields()) {
                 String[] result = extractType(field.getType());
+
+                if (!Constants.BASE_TYPES.contains(result[0])) {
+                    result[0] += Constants.ENTITY_CLASS_SUFFIX;
+                }
+
                 Attribute attribute = new Attribute(field.getName(), result[0], result[1]);
                 entityClass.addAttribute(attribute);
             }
