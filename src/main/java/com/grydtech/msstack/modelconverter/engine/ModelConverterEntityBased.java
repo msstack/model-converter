@@ -33,7 +33,7 @@ public class ModelConverterEntityBased implements ModelConverter {
             HandlerClassSchema handler = new HandlerClassSchema(businessContract.getHandler().getName() + Constants.HANDLER_CLASS_SUFFIX, businessContract.getHandler().getType());
 
             // get events from business contract and update class schemas and handlers according to that
-            for (String event : businessContract.getEvents()) {
+            businessContract.getEvents().forEach(event -> {
                 // create class for each event
                 EventClassSchema eventClass = new EventClassSchema(event + Constants.EVENT_CLASS_SUFFIX);
                 microServiceModel.addEventClass(eventClass);
@@ -43,30 +43,25 @@ public class ModelConverterEntityBased implements ModelConverter {
 
                 // to wire event emitting inside handler
                 handler.addEvent(event + Constants.EVENT_CLASS_SUFFIX);
-            }
+            });
 
             RequestClassSchema request = new RequestClassSchema(businessContract.getRequest().getName());
-            List<EntityField> requestFields = businessContract.getRequest().getFields();
-            List<Attribute> reqAttributes = new ArrayList<>();
-            requestFields.forEach((reqField) -> {
-                reqAttributes.add(new Attribute(reqField.getName(), reqField.getType(), "single"));
+            businessContract.getRequest().getFields().forEach((reqField) -> {
+                request.addAttribute(new Attribute(reqField.getName(), reqField.getType(), "single"));
             });
-            request.setAttributes(reqAttributes);
-            handler.setConsume(request);
 
             ResponseClassSchema response = new ResponseClassSchema(businessContract.getResponse().getName());            
-            List<EntityField> responseFields = businessContract.getResponse().getFields();
-            List<Attribute> resAttributes = new ArrayList<>();
-            responseFields.forEach((resField) -> {
-                resAttributes.add(new Attribute(resField.getName(), resField.getType(), "single"));
+            businessContract.getResponse().getFields().forEach((resField) -> {
+                response.addAttribute(new Attribute(resField.getName(), resField.getType(), "single"));
             });
-            response.setAttributes(resAttributes);
+
+            handler.setConsume(request);
             handler.setProduce(response);
 
             microServiceModel.addHandler(handler);
         }
 
-        return new ArrayList<MicroServiceModel>(microServiceModelMap.values());
+        return new ArrayList<>(microServiceModelMap.values());
     }
 
     // recursively search for entities (sub entities) and create class schemas
@@ -83,7 +78,7 @@ public class ModelConverterEntityBased implements ModelConverter {
             EntityClassSchema entityClass = new EntityClassSchema(entity.getName() + Constants.ENTITY_CLASS_SUFFIX);
 
             // create attributes for business entity fields
-            for (EntityField field : entity.getFields()) {
+            entity.getFields().forEach(field -> {
                 String[] result = extractType(field.getType());
 
                 if (!Constants.BASE_TYPES.contains(result[0])) {
@@ -92,7 +87,7 @@ public class ModelConverterEntityBased implements ModelConverter {
 
                 Attribute attribute = new Attribute(field.getName(), result[0], result[1]);
                 entityClass.addAttribute(attribute);
-            }
+            });
 
             entityClasses.add(entityClass);
             entities.remove(0);
