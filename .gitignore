@@ -27,3 +27,6 @@ target
 # jetbrains
 .idea
 *.iml
+
+#netbeans
+nbactions.xml

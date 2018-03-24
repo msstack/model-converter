@@ -45,6 +45,24 @@ public class ModelConverterEntityBased implements ModelConverter {
                 handler.addEvent(event + Constants.EVENT_CLASS_SUFFIX);
             }
 
+            RequestClassSchema request = new RequestClassSchema(businessContract.getRequest().getName());
+            List<EntityField> requestFields = businessContract.getRequest().getFields();
+            List<Attribute> reqAttributes = new ArrayList<>();
+            requestFields.forEach((reqField) -> {
+                reqAttributes.add(new Attribute(reqField.getName(), reqField.getType(), "single"));
+            });
+            request.setAttributes(reqAttributes);
+            handler.setConsume(request);
+
+            ResponseClassSchema response = new ResponseClassSchema(businessContract.getResponse().getName());            
+            List<EntityField> responseFields = businessContract.getResponse().getFields();
+            List<Attribute> resAttributes = new ArrayList<>();
+            responseFields.forEach((resField) -> {
+                resAttributes.add(new Attribute(resField.getName(), resField.getType(), "single"));
+            });
+            response.setAttributes(resAttributes);
+            handler.setProduce(response);
+
             microServiceModel.addHandler(handler);
         }
 
