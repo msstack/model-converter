@@ -8,15 +8,15 @@ import java.util.List;
 
 public class MicroServiceModel extends Model {
     private String serviceName;
-    private List<ClassSchema> entityClasses;
-    private List<ClassSchema> eventClasses;
-    private List<HandlerSchema> handlers;
+    private List<EntityClassSchema> entityClasses;
+    private List<EventClassSchema> eventClasses;
+    private List<HandlerClassSchema> handlers;
 
     public MicroServiceModel(String serviceName) {
         this.serviceName = serviceName;
-        this.entityClasses = new ArrayList<ClassSchema>();
-        this.eventClasses = new ArrayList<ClassSchema>();
-        this.handlers = new ArrayList<HandlerSchema>();
+        this.entityClasses = new ArrayList<>();
+        this.eventClasses = new ArrayList<>();
+        this.handlers = new ArrayList<>();
     }
 
     public String getServiceName() {
@@ -27,39 +27,39 @@ public class MicroServiceModel extends Model {
         this.serviceName = serviceName;
     }
 
-    public List<ClassSchema> getEntityClasses() {
+    public List<EntityClassSchema> getEntityClasses() {
         return entityClasses;
     }
 
-    public List<ClassSchema> getEventClasses() {
+    public List<EventClassSchema> getEventClasses() {
         return eventClasses;
     }
 
-    public List<HandlerSchema> getHandlers() {
+    public List<HandlerClassSchema> getHandlers() {
         return handlers;
     }
 
-    public void addEntityClass(ClassSchema entityClass) {
+    public void addEntityClass(EntityClassSchema entityClass) {
         this.entityClasses.add(entityClass);
     }
 
-    public void addEntityClassCollection(Collection<ClassSchema> entityClasses) {
+    public void addEntityClassCollection(Collection<EntityClassSchema> entityClasses) {
         this.entityClasses.addAll(entityClasses);
     }
 
-    public void addEventClass(ClassSchema eventClass) {
+    public void addEventClass(EventClassSchema eventClass) {
         this.eventClasses.add(eventClass);
     }
 
-    public void addEventClassCollection(Collection<ClassSchema> eventClasses) {
+    public void addEventClassCollection(Collection<EventClassSchema> eventClasses) {
         this.eventClasses.addAll(eventClasses);
     }
 
-    public void addHandler(HandlerSchema handler) {
+    public void addHandler(HandlerClassSchema handler) {
         this.handlers.add(handler);
     }
 
-    public void addHandlerCollection(Collection<HandlerSchema> handlers) {
+    public void addHandlerCollection(Collection<HandlerClassSchema> handlers) {
         this.handlers.addAll(handlers);
     }
 }

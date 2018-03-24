@@ -15,7 +15,7 @@ import java.util.Map;
 public class ModelConverterEntityBased implements ModelConverter {
 
     public List<MicroServiceModel> convertToMicroServiceModel(BusinessModel businessModel) {
-        Map<String, MicroServiceModel> microServiceModelMap = new HashMap<String, MicroServiceModel>();
+        Map<String, MicroServiceModel> microServiceModelMap = new HashMap<>();
 
         for (BusinessContract businessContract : businessModel.getContracts()) {
             MicroServiceModel microServiceModel;
@@ -30,23 +30,19 @@ public class ModelConverterEntityBased implements ModelConverter {
                 microServiceModelMap.put(businessContract.getEntityId(), microServiceModel);
             }
 
-            HandlerSchema handler = new HandlerSchema(businessContract.getHandler().getName() + Constants.HANDLER_CLASS_SUFFIX, businessContract.getHandler().getType());
+            HandlerClassSchema handler = new HandlerClassSchema(businessContract.getHandler().getName() + Constants.HANDLER_CLASS_SUFFIX, businessContract.getHandler().getType());
 
             // get events from business contract and update class schemas and handlers according to that
-            for (String event: businessContract.getEvents()) {
+            for (String event : businessContract.getEvents()) {
                 // create class for each event
-                ClassSchema eventClass = new ClassSchema(event + Constants.EVENT_CLASS_SUFFIX);
+                EventClassSchema eventClass = new EventClassSchema(event + Constants.EVENT_CLASS_SUFFIX);
                 microServiceModel.addEventClass(eventClass);
 
                 // add event apply method to base entity (eg: void apply(OrderCreatedEvent event))
-                ClassSchema baseEntityClass = microServiceModel.getEntityClasses().get(0);
-                Attribute attribute = new Attribute(event, eventClass.getName());
-                Method method = new Method("apply");
-                method.addInput(attribute);
-                baseEntityClass.addMethod(method);
+                microServiceModel.getEntityClasses().get(0).addEvent(event);
 
                 // to wire event emitting inside handler
-                handler.addEvent(attribute);
+                handler.addEvent(event);
             }
 
             microServiceModel.addHandler(handler);
@@ -56,28 +52,39 @@ public class ModelConverterEntityBased implements ModelConverter {
     }
 
     // recursively search for entities (sub entities) and create class schemas
-    private List<ClassSchema> extractEntities(BusinessEntity baseEntity) {
+    private List<EntityClassSchema> extractEntities(BusinessEntity baseEntity) {
         // ToDo: Validations not implemented
-        List<ClassSchema> classSchemas = new ArrayList<ClassSchema>();
-        List<BusinessEntity> entities = new ArrayList<BusinessEntity>();
+        List<EntityClassSchema> entityClasses = new ArrayList<>();
+        List<BusinessEntity> entities = new ArrayList<>();
         entities.add(baseEntity);
 
         while (!entities.isEmpty()) {
             BusinessEntity entity = entities.get(0);
             entities.addAll(entity.getSubEntities());
 
-            ClassSchema classSchema = new ClassSchema(entity.getName() + Constants.ENTITY_CLASS_SUFFIX);
+            EntityClassSchema entityClass = new EntityClassSchema(entity.getName() + Constants.ENTITY_CLASS_SUFFIX);
 
             // create attributes for business entity fields
-            for (EntityField field: entity.getFields()) {
-                Attribute attribute = new Attribute(field.getName(), field.getType());
-                classSchema.addAttribute(attribute);
+            for (EntityField field : entity.getFields()) {
+                String[] result = extractType(field.getType());
+                Attribute attribute = new Attribute(field.getName(), result[0], result[1]);
+                entityClass.addAttribute(attribute);
             }
 
-            classSchemas.add(classSchema);
+            entityClasses.add(entityClass);
             entities.remove(0);
         }
 
-        return classSchemas;
+        return entityClasses;
+    }
+
+    private static String[] extractType(String type) {
+        if (type.contains("array")) {
+            int pos1 = type.indexOf("<");
+            int pos2 = type.indexOf(">");
+            return new String[]{type.substring(pos1 + 1, pos2), "array"};
+        } else {
+            return new String[]{type, "single"};
+        }
     }
 }

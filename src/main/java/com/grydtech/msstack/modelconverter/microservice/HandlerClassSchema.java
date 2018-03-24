@@ -4,25 +4,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class HandlerSchema {
-    private String name;
+public class HandlerClassSchema extends ClassSchema {
     private String type;
     private Attribute consume;
     private Attribute produce;
-    private List<Attribute> events;
+    private List<String> events;
 
-    public HandlerSchema(String name, String type) {
-        this.name = name;
+    public HandlerClassSchema(String name, String type) {
+        super(name);
         this.type = type;
-        this.events = new ArrayList<Attribute>();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        this.events = new ArrayList<>();
     }
 
     public String getType() {
@@ -49,15 +40,15 @@ public class HandlerSchema {
         this.produce = produce;
     }
 
-    public List<Attribute> getEvents() {
+    public List<String> getEvents() {
         return events;
     }
 
-    public void addEvent(Attribute event) {
+    public void addEvent(String event) {
         this.events.add(event);
     }
 
-    public void addEventCollection(Collection<Attribute> events) {
+    public void addEventCollection(Collection<String> events) {
         this.events.addAll(events);
     }
 }

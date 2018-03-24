@@ -3,14 +3,12 @@ package com.grydtech.msstack.modelconverter.microservice;
 public class Attribute {
     private String name;
     private String type;
+    private String multiplicity;
 
-    public Attribute(String name) {
-        this.name = name;
-    }
-
-    public Attribute(String name, String type) {
+    public Attribute(String name, String type, String multiplicity) {
         this.name = name;
         this.type = type;
+        this.multiplicity = multiplicity;
     }
 
     public String getName() {
@@ -27,5 +25,13 @@ public class Attribute {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getMultiplicity() {
+        return multiplicity;
+    }
+
+    public void setMultiplicity(String multiplicity) {
+        this.multiplicity = multiplicity;
     }
 }
