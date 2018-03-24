@@ -3,14 +3,15 @@ package com.grydtech.msstack.modelconverter.business;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Response {
+public class ContractRequest {
 
     private String id;
     private String name;
+    private String type;
     private List<EntityField> fields;
 
-    public Response() {
-        this.fields = this.fields = new ArrayList<>();
+    public ContractRequest() {
+        this.fields = new ArrayList<>();
     }
 
     public String getId() {
@@ -27,6 +28,14 @@ public class Response {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public List<EntityField> getFields() {

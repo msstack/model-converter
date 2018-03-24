@@ -6,8 +6,8 @@ import com.grydtech.msstack.modelconverter.business.BusinessContract;
 import com.grydtech.msstack.modelconverter.business.BusinessEntity;
 import com.grydtech.msstack.modelconverter.business.BusinessModel;
 import com.grydtech.msstack.modelconverter.business.EntityField;
-import com.grydtech.msstack.modelconverter.business.Request;
-import com.grydtech.msstack.modelconverter.business.Response;
+import com.grydtech.msstack.modelconverter.business.ContractRequest;
+import com.grydtech.msstack.modelconverter.business.ContractResponse;
 import com.grydtech.msstack.modelconverter.microservice.MicroServiceModel;
 
 import java.io.File;
@@ -34,8 +34,8 @@ public class ModelReaderJackson implements ModelReader {
         }
 
         Map<String, BusinessEntity> entityMap = new HashMap<String, BusinessEntity>();
-        Map<String, Request> requestMap = new HashMap<>();
-        Map<String, Response> responseMap = new HashMap<>();
+        Map<String, ContractRequest> requestMap = new HashMap<>();
+        Map<String, ContractResponse> responseMap = new HashMap<>();
 
         assert businessModel != null;
         for (BusinessEntity businessEntity : businessModel.getEntities()) {
@@ -51,17 +51,17 @@ public class ModelReaderJackson implements ModelReader {
                         field.setType(field.getType().replace(subEntityId, subEntity.getName()));
                         businessEntity.addSubEntity(subEntity);
                     }
-                    //at a later point, required toadd the subEntity
+                    //at a later point, required to add the subEntity
                 }
             }
             entityMap.put(businessEntity.getId(), businessEntity);
         }
 
-        for (Request request : businessModel.getRequests()) {
+        for (ContractRequest request : businessModel.getRequests()) {
             requestMap.put(request.getId(), request);
         }
 
-        for (Response response : businessModel.getResponses()) {
+        for (ContractResponse response : businessModel.getResponses()) {
             responseMap.put(response.getId(), response);
         }
         for (BusinessContract businessContract : businessModel.getContracts()) {

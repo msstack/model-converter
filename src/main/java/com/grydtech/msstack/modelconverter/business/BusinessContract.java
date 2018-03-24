@@ -12,8 +12,8 @@ public class BusinessContract {
     private String id;
     private String entityId;
     private ContractHandler handler;
-    private Request request;
-    private Response response;
+    private ContractRequest request;
+    private ContractResponse response;
     private List<String> events;
     private BusinessEntity entity;
     private String requestId;
@@ -67,19 +67,19 @@ public class BusinessContract {
         this.events.addAll(events);
     }
 
-    public Request getRequest() {
+    public ContractRequest getRequest() {
         return request;
     }
 
-    public void setRequest(Request request) {
+    public void setRequest(ContractRequest request) {
         this.request = request;
     }
 
-    public Response getResponse() {
+    public ContractResponse getResponse() {
         return response;
     }
 
-    public void setResponse(Response response) {
+    public void setResponse(ContractResponse response) {
         this.response = response;
     }
 
