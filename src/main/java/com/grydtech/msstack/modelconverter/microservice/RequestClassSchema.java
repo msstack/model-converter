@@ -13,6 +13,14 @@ public class RequestClassSchema extends ClassSchema {
         this.attributes = new ArrayList<>();
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public List<Attribute> getAttributes() {
         return attributes;
     }

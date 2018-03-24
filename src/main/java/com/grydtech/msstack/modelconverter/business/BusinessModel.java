@@ -68,10 +68,4 @@ public class BusinessModel extends Model {
         this.responses.add(response);
     }
 
-    @Override
-    public String toString() {
-        return "BusinessModel{" + "requests=" + requests + ", responses=" + responses + '}';
-    }
-
-    
 }

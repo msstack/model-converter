@@ -99,9 +99,4 @@ public class BusinessContract {
         this.responseId = responseId;
     }
 
-    @Override
-    public String toString() {
-        return "BusinessContract{" + "id=" + id + ", entityId=" + entityId + ", handler=" + handler + ", request=" + request + ", response=" + response + ", events=" + events + ", entity=" + entity + ", requestId=" + requestId + ", responseId=" + responseId + '}';
-    }
-
 }
