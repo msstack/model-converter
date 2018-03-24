@@ -39,10 +39,10 @@ public class ModelConverterEntityBased implements ModelConverter {
                 microServiceModel.addEventClass(eventClass);
 
                 // add event apply method to base entity (eg: void apply(OrderCreatedEvent event))
-                microServiceModel.getEntityClasses().get(0).addEvent(event);
+                microServiceModel.getEntityClasses().get(0).addEvent(event + Constants.EVENT_CLASS_SUFFIX);
 
                 // to wire event emitting inside handler
-                handler.addEvent(event);
+                handler.addEvent(event + Constants.EVENT_CLASS_SUFFIX);
             }
 
             microServiceModel.addHandler(handler);
