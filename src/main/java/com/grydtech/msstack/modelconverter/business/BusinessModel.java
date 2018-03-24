@@ -14,10 +14,10 @@ public class BusinessModel extends Model {
     private List<ContractResponse> responses;
 
     public BusinessModel() {
-        this.entities = new ArrayList<BusinessEntity>();
-        this.contracts = new ArrayList<BusinessContract>();
-        this.requests = new ArrayList<ContractRequest>();
-        this.responses = new ArrayList<ContractResponse>();
+        this.entities = new ArrayList<>();
+        this.contracts = new ArrayList<>();
+        this.requests = new ArrayList<>();
+        this.responses = new ArrayList<>();
     }
 
     public List<BusinessEntity> getEntities() {

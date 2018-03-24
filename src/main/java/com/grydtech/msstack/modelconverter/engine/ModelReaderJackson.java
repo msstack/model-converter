@@ -33,42 +33,39 @@ public class ModelReaderJackson implements ModelReader {
             e.printStackTrace();
         }
 
-        Map<String, BusinessEntity> entityMap = new HashMap<String, BusinessEntity>();
+        Map<String, BusinessEntity> entityMap = new HashMap<>();
         Map<String, ContractRequest> requestMap = new HashMap<>();
         Map<String, ContractResponse> responseMap = new HashMap<>();
 
         assert businessModel != null;
-        for (BusinessEntity businessEntity : businessModel.getEntities()) {
-            for (EntityField field : businessEntity.getFields()) {
+        businessModel.getEntities().forEach(businessEntity -> {
+            businessEntity.getFields().forEach(field -> {
                 int pos1 = field.getType().indexOf('<');
+                int pos2 = field.getType().indexOf('>');
                 if (pos1 != -1) {
-                    //pos2 only exists iff pos1 exists
-                    int pos2 = field.getType().indexOf('>');
                     String subEntityId = field.getType().substring(pos1 + 1, pos2);
-                    //what if at this point subentityis not added in json?
                     BusinessEntity subEntity = entityMap.get(subEntityId);
-                    if (subEntity != null) {
-                        field.setType(field.getType().replace(subEntityId, subEntity.getName()));
-                        businessEntity.addSubEntity(subEntity);
-                    }
-                    //at a later point, required to add the subEntity
+                    businessEntity.addSubEntity(subEntity);
+
+                    field.setType(field.getType().replace(subEntityId, subEntity.getName()));
                 }
-            }
+            });
             entityMap.put(businessEntity.getId(), businessEntity);
-        }
+        });
 
-        for (ContractRequest request : businessModel.getRequests()) {
+        businessModel.getRequests().forEach(request -> {
             requestMap.put(request.getId(), request);
-        }
+        });
 
-        for (ContractResponse response : businessModel.getResponses()) {
+        businessModel.getResponses().forEach(response -> {
             responseMap.put(response.getId(), response);
-        }
-        for (BusinessContract businessContract : businessModel.getContracts()) {
+        });
+
+        businessModel.getContracts().forEach(businessContract -> {
             businessContract.setEntity(entityMap.get(businessContract.getEntityId()));
             businessContract.setRequest(requestMap.get(businessContract.getRequestId()));
             businessContract.setResponse(responseMap.get(businessContract.getResponseId()));
-        }
+        });
 
         return businessModel;
     }
