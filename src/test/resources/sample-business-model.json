@@ -53,7 +53,7 @@
   "requests": [
     {
       "id": "req1",
-      "name": "add_item_req",
+      "name": "add_item_request",
       "type": "command",
       "fields": [
         {
@@ -70,7 +70,7 @@
   "responses": [
     {
       "id": "res1",
-      "name": "add_item_res",
+      "name": "add_item_response",
       "fields": [
         {
           "name": "item_code",
