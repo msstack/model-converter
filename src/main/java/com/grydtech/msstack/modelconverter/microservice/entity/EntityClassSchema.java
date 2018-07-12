@@ -1,22 +1,17 @@
-package com.grydtech.msstack.modelconverter.microservice;
+package com.grydtech.msstack.modelconverter.microservice.entity;
+
+import com.grydtech.msstack.modelconverter.microservice.ClassSchema;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class EntityClassSchema extends ClassSchema {
-    private List<Attribute> attributes;
-    private List<String> events;
-
-    public EntityClassSchema(String name) {
-        super(name);
-        this.attributes = new ArrayList<>();
-        this.events = new ArrayList<>();
-    }
-
-    public List<Attribute> getAttributes() {
-        return attributes;
-    }
+    private final List<Attribute> attributes = new ArrayList<>();
+    private final List<String> events = new ArrayList<>();
 
     public void addAttribute(Attribute attribute) {
         this.attributes.add(attribute);
@@ -24,10 +19,6 @@ public class EntityClassSchema extends ClassSchema {
 
     public void addAttributeCollection(Collection<Attribute> attributes) {
         this.attributes.addAll(attributes);
-    }
-
-    public List<String> getEvents() {
-        return events;
     }
 
     public void addEvent(String event) {

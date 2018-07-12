@@ -1,32 +1,29 @@
 package com.grydtech.msstack.modelconverter.business;
 
+import com.grydtech.msstack.modelconverter.business.contract.BusinessContract;
+import com.grydtech.msstack.modelconverter.business.contract.ContractRequest;
+import com.grydtech.msstack.modelconverter.business.contract.ContractResponse;
+import com.grydtech.msstack.modelconverter.business.entity.BusinessEntity;
+import com.grydtech.msstack.modelconverter.business.server.BusinessServer;
 import com.grydtech.msstack.modelconverter.common.Model;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
+@NoArgsConstructor
 public class BusinessModel extends Model {
 
-    private List<BusinessEntity> entities;
-    private List<BusinessContract> contracts;
-    private List<ContractRequest> requests;
-    private List<ContractResponse> responses;
-
-    public BusinessModel() {
-        this.entities = new ArrayList<>();
-        this.contracts = new ArrayList<>();
-        this.requests = new ArrayList<>();
-        this.responses = new ArrayList<>();
-    }
-
-    public List<BusinessEntity> getEntities() {
-        return entities;
-    }
-
-    public List<BusinessContract> getContracts() {
-        return contracts;
-    }
+    private final List<BusinessEntity> entities = new ArrayList<>();
+    private final List<BusinessContract> contracts = new ArrayList<>();
+    private final List<ContractRequest> requests = new ArrayList<>();
+    private final List<ContractResponse> responses = new ArrayList<>();
+    private final List<BusinessServer> servers = new ArrayList<>();
 
     public void addEntity(BusinessEntity entity) {
         this.entities.add(entity);
@@ -44,28 +41,27 @@ public class BusinessModel extends Model {
         this.contracts.addAll(contracts);
     }
 
-    public List<ContractRequest> getRequests() {
-        return requests;
-    }
-
-    public void setRequests(Collection<ContractRequest> requests) {
-        this.requests.addAll(requests);
-    }
-
-    public void setRequest(ContractRequest request) {
+    public void addRequest(ContractRequest request) {
         this.requests.add(request);
     }
 
-    public List<ContractResponse> getResponses() {
-        return responses;
+    public void addRequestCollection(Collection<ContractRequest> requests) {
+        this.requests.addAll(requests);
     }
 
-    public void setResponses(Collection<ContractResponse> responses) {
-        this.responses.addAll(responses);
-    }
-
-    public void setResponse(ContractResponse response) {
+    public void addResponse(ContractResponse response) {
         this.responses.add(response);
     }
 
+    public void addResponseCollection(Collection<ContractResponse> responses) {
+        this.responses.addAll(responses);
+    }
+
+    public void addServer(BusinessServer server) {
+        this.servers.add(server);
+    }
+
+    public void addServerCollection(Collection<BusinessServer> servers) {
+        this.servers.addAll(servers);
+    }
 }

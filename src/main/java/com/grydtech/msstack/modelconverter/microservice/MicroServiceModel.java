@@ -1,43 +1,23 @@
 package com.grydtech.msstack.modelconverter.microservice;
 
 import com.grydtech.msstack.modelconverter.common.Model;
+import com.grydtech.msstack.modelconverter.microservice.entity.EntityClassSchema;
+import com.grydtech.msstack.modelconverter.microservice.communication.EventClassSchema;
+import com.grydtech.msstack.modelconverter.microservice.handler.HandlerClassSchema;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
+@NoArgsConstructor
 public class MicroServiceModel extends Model {
     private String serviceName;
-    private List<EntityClassSchema> entityClasses;
-    private List<EventClassSchema> eventClasses;
-    private List<HandlerClassSchema> handlers;
-
-    public MicroServiceModel(String serviceName) {
-        this.serviceName = serviceName;
-        this.entityClasses = new ArrayList<>();
-        this.eventClasses = new ArrayList<>();
-        this.handlers = new ArrayList<>();
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    public List<EntityClassSchema> getEntityClasses() {
-        return entityClasses;
-    }
-
-    public List<EventClassSchema> getEventClasses() {
-        return eventClasses;
-    }
-
-    public List<HandlerClassSchema> getHandlers() {
-        return handlers;
-    }
+    private final List<EntityClassSchema> entityClasses = new ArrayList<>();
+    private final List<EventClassSchema> eventClasses = new ArrayList<>();
+    private final List<HandlerClassSchema> handlers = new ArrayList<>();
 
     public void addEntityClass(EntityClassSchema entityClass) {
         this.entityClasses.add(entityClass);

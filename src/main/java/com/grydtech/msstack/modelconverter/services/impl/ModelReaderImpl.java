@@ -1,41 +1,44 @@
-package com.grydtech.msstack.modelconverter.engine;
+package com.grydtech.msstack.modelconverter.services.impl;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.grydtech.msstack.modelconverter.business.BusinessContract;
-import com.grydtech.msstack.modelconverter.business.BusinessEntity;
+import com.grydtech.msstack.modelconverter.business.contract.BusinessContract;
+import com.grydtech.msstack.modelconverter.business.entity.BusinessEntity;
 import com.grydtech.msstack.modelconverter.business.BusinessModel;
-import com.grydtech.msstack.modelconverter.business.EntityField;
-import com.grydtech.msstack.modelconverter.business.ContractRequest;
-import com.grydtech.msstack.modelconverter.business.ContractResponse;
+import com.grydtech.msstack.modelconverter.business.contract.ContractRequest;
+import com.grydtech.msstack.modelconverter.business.contract.ContractResponse;
+import com.grydtech.msstack.modelconverter.common.Constants;
 import com.grydtech.msstack.modelconverter.microservice.MicroServiceModel;
+import com.grydtech.msstack.modelconverter.services.ModelReader;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ModelReaderJackson implements ModelReader {
+public class ModelReaderImpl implements ModelReader {
 
     private static ObjectMapper objectMapper;
 
     static {
         objectMapper = new ObjectMapper();
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     public BusinessModel readBusinessModel(File file) {
         BusinessModel businessModel = null;
         try {
             businessModel = objectMapper.readValue(file, BusinessModel.class);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Map<String, BusinessEntity> entityMap = new HashMap<>();
-        Map<String, ContractRequest> requestMap = new HashMap<>();
-        Map<String, ContractResponse> responseMap = new HashMap<>();
+        final Map<String, BusinessEntity> entityMap = new HashMap<>();
+        final Map<String, ContractRequest> requestMap = new HashMap<>();
+        final Map<String, ContractResponse> responseMap = new HashMap<>();
+        final Map<String, BusinessContract> contractMap = new HashMap<>();
 
         assert businessModel != null;
         businessModel.getEntities().forEach(businessEntity -> {
@@ -65,6 +68,13 @@ public class ModelReaderJackson implements ModelReader {
             businessContract.setEntity(entityMap.get(businessContract.getEntityId()));
             businessContract.setRequest(requestMap.get(businessContract.getRequestId()));
             businessContract.setResponse(responseMap.get(businessContract.getResponseId()));
+            contractMap.put(businessContract.getId(), businessContract);
+        });
+
+        businessModel.getServers().forEach(businessServer -> {
+            businessServer.getContractIds().forEach(id -> {
+                businessServer.addContract(contractMap.get(id));
+            });
         });
 
         return businessModel;

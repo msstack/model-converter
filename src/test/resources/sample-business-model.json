@@ -53,8 +53,9 @@
   "requests": [
     {
       "id": "req1",
-      "name": "add_item_request",
+      "name": "add_order_item",
       "type": "command",
+      "entity_id": "en2",
       "fields": [
         {
           "name": "item_code",
@@ -70,7 +71,7 @@
   "responses": [
     {
       "id": "res1",
-      "name": "add_item_response",
+      "name": "add_order_item",
       "fields": [
         {
           "name": "item_code",
@@ -83,6 +84,28 @@
       ]
     }
   ],
+  "events": [
+    {
+      "id": "ev1",
+      "name": "order_created",
+      "entity_id": "en2"
+    },
+    {
+      "id": "ev2",
+      "name": "order_item_added",
+      "entity_id": "en2"
+    },
+    {
+      "id": "ev3",
+      "name": "order_finalized",
+      "entity_id": "en2"
+    },
+    {
+      "id": "ev4",
+      "name": "item_created",
+      "entity_id": "en1"
+    }
+  ],
   "contracts": [
     {
       "id": "cn1",
@@ -93,8 +116,8 @@
       },
       "request_id": "req1",
       "response_id": "res1",
-      "events": [
-        "order_created"
+      "event_ids": [
+        "ev1"
       ]
     },
     {
@@ -102,12 +125,12 @@
       "entity_id": "en2",
       "handler": {
         "type": "command",
-        "name": "add_item"
+        "name": "add_order_item"
       },
       "request_id": "req1",
       "response_id": "res1",
-      "events": [
-        "item_added"
+      "event_ids": [
+        "ev2"
       ]
     },
     {
@@ -119,8 +142,8 @@
       },
       "request_id": "req1",
       "response_id": "res1",
-      "events": [
-        "order_finalized"
+      "event_ids": [
+        "ev3"
       ]
     },
     {
@@ -132,7 +155,7 @@
       },
       "request_id": "req1",
       "response_id": "res1",
-      "events": [
+      "events_ids": [
       ]
     },
     {
@@ -142,10 +165,29 @@
         "type": "command",
         "name": "add_item"
       },
-     "request_id": "req1",
+      "request_id": "req1",
       "response_id": "res1",
-      "events": [
-        "item_added"
+      "events_ids": [
+        "ev4"
+      ]
+    }
+  ],
+  "servers": [
+    {
+      "id": "sv1",
+      "name": "order",
+      "contract_ids": [
+        "cn1",
+        "cn2",
+        "c3"
+      ]
+    },
+    {
+      "id": "sv2",
+      "name": "item",
+      "contract_ids": [
+        "cr4",
+        "cr5"
       ]
     }
   ]
