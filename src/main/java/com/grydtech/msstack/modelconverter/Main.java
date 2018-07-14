@@ -3,18 +3,18 @@ package com.grydtech.msstack.modelconverter;
 import com.grydtech.msstack.modelconverter.business.BusinessModel;
 import com.grydtech.msstack.modelconverter.services.*;
 import com.grydtech.msstack.modelconverter.microservice.MicroServiceModel;
-import com.grydtech.msstack.modelconverter.services.impl.ModelConverterImpl;
-import com.grydtech.msstack.modelconverter.services.impl.ModelReaderImpl;
-import com.grydtech.msstack.modelconverter.services.impl.ModelWriterImpl;
+import com.grydtech.msstack.modelconverter.services.impl.DefaultModelConverter;
+import com.grydtech.msstack.modelconverter.services.impl.DefaultModelReader;
+import com.grydtech.msstack.modelconverter.services.impl.DefaultModelWriter;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 public class Main {
-    private static ModelReader modelReader = new ModelReaderImpl();
-    private static ModelWriter modelWriter = new ModelWriterImpl();
-    private static ModelConverter modelConverter = new ModelConverterImpl();
+    private static ModelReader modelReader = new DefaultModelReader();
+    private static ModelWriter modelWriter = new DefaultModelWriter();
+    private static ModelConverter modelConverter = new DefaultModelConverter();
 
     public static void main(String[] args) {
         String method = args[0];

@@ -6,5 +6,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public abstract class ClassSchema {
+    private String id;
     private String name;
 }

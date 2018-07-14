@@ -1,4 +1,4 @@
-package com.grydtech.msstack.modelconverter.microservice.entity;
+package com.grydtech.msstack.modelconverter.microservice;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 public final class Attribute {
     private String name;
     private String type;
-    private String multiplicity;
+    private boolean entity;
+    private boolean array;
 }

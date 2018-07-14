@@ -1,6 +1,9 @@
 package com.grydtech.msstack.modelconverter.business.contract;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.grydtech.msstack.modelconverter.business.communication.BusinessEvent;
+import com.grydtech.msstack.modelconverter.business.communication.BusinessRequest;
+import com.grydtech.msstack.modelconverter.business.communication.BusinessResponse;
 import com.grydtech.msstack.modelconverter.business.entity.BusinessEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,14 +18,14 @@ public class BusinessContract {
 
     private String id;
     private String entityId;
-    private ContractHandler handler;
+    private BusinessContractHandler handler;
     private String requestId;
     private String responseId;
-    private final List<String> event_ids = new ArrayList<>();
+    private final List<String> eventIds = new ArrayList<>();
     @JsonIgnore
-    private ContractRequest request;
+    private BusinessRequest request;
     @JsonIgnore
-    private ContractResponse response;
+    private BusinessResponse response;
     @JsonIgnore
     private BusinessEntity entity;
     @JsonIgnore

@@ -1,5 +1,6 @@
-package com.grydtech.msstack.modelconverter.microservice.entity;
+package com.grydtech.msstack.modelconverter.microservice.communication;
 
+import com.grydtech.msstack.modelconverter.microservice.Attribute;
 import com.grydtech.msstack.modelconverter.microservice.ClassSchema;
 import lombok.*;
 
@@ -9,9 +10,9 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class EntityClassSchema extends ClassSchema {
+@NoArgsConstructor
+public abstract class CommunicationClass extends ClassSchema {
     private final List<Attribute> attributes = new ArrayList<>();
-    private final List<String> events = new ArrayList<>();
 
     public void addAttribute(Attribute attribute) {
         this.attributes.add(attribute);
@@ -20,13 +21,4 @@ public class EntityClassSchema extends ClassSchema {
     public void addAttributeCollection(Collection<Attribute> attributes) {
         this.attributes.addAll(attributes);
     }
-
-    public void addEvent(String event) {
-        this.events.add(event);
-    }
-
-    public void addEventCollection(Collection<String> events) {
-        this.events.addAll(events);
-    }
-
 }

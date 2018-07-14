@@ -9,7 +9,7 @@ import com.grydtech.msstack.modelconverter.services.ModelWriter;
 import java.io.File;
 import java.io.IOException;
 
-public class ModelWriterImpl implements ModelWriter {
+public class DefaultModelWriter implements ModelWriter {
     private static ObjectMapper objectMapper;
 
     static {

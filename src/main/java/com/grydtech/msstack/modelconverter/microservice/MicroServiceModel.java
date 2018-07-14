@@ -1,9 +1,11 @@
 package com.grydtech.msstack.modelconverter.microservice;
 
 import com.grydtech.msstack.modelconverter.common.Model;
-import com.grydtech.msstack.modelconverter.microservice.entity.EntityClassSchema;
-import com.grydtech.msstack.modelconverter.microservice.communication.EventClassSchema;
-import com.grydtech.msstack.modelconverter.microservice.handler.HandlerClassSchema;
+import com.grydtech.msstack.modelconverter.microservice.communication.RequestClass;
+import com.grydtech.msstack.modelconverter.microservice.communication.ResponseClass;
+import com.grydtech.msstack.modelconverter.microservice.entity.EntityClass;
+import com.grydtech.msstack.modelconverter.microservice.communication.EventClass;
+import com.grydtech.msstack.modelconverter.microservice.handler.HandlerClass;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -15,31 +17,49 @@ import java.util.List;
 @NoArgsConstructor
 public class MicroServiceModel extends Model {
     private String serviceName;
-    private final List<EntityClassSchema> entityClasses = new ArrayList<>();
-    private final List<EventClassSchema> eventClasses = new ArrayList<>();
-    private final List<HandlerClassSchema> handlers = new ArrayList<>();
+    private final List<EntityClass> entityClasses = new ArrayList<>();
+    private final List<RequestClass> requestClasses = new ArrayList<>();
+    private final List<ResponseClass> responseClasses = new ArrayList<>();
+    private final List<EventClass> eventClasses = new ArrayList<>();
+    private final List<HandlerClass> handlerClasses = new ArrayList<>();
 
-    public void addEntityClass(EntityClassSchema entityClass) {
+    public void addEntityClass(EntityClass entityClass) {
         this.entityClasses.add(entityClass);
     }
 
-    public void addEntityClassCollection(Collection<EntityClassSchema> entityClasses) {
+    public void addEntityClassCollection(Collection<EntityClass> entityClasses) {
         this.entityClasses.addAll(entityClasses);
     }
 
-    public void addEventClass(EventClassSchema eventClass) {
+    public void addRequestClass(RequestClass requestClass) {
+        this.requestClasses.add(requestClass);
+    }
+
+    public void addRequestClassCollection(Collection<RequestClass> requestClasses) {
+        this.requestClasses.addAll(requestClasses);
+    }
+
+    public void addResponseClass(ResponseClass responseClass) {
+        this.responseClasses.add(responseClass);
+    }
+
+    public void addResponseClassCollection(Collection<ResponseClass> responseClasses) {
+        this.responseClasses.addAll(responseClasses);
+    }
+
+    public void addEventClass(EventClass eventClass) {
         this.eventClasses.add(eventClass);
     }
 
-    public void addEventClassCollection(Collection<EventClassSchema> eventClasses) {
+    public void addEventClassCollection(Collection<EventClass> eventClasses) {
         this.eventClasses.addAll(eventClasses);
     }
 
-    public void addHandler(HandlerClassSchema handler) {
-        this.handlers.add(handler);
+    public void addHandlerClass(HandlerClass handler) {
+        this.handlerClasses.add(handler);
     }
 
-    public void addHandlerCollection(Collection<HandlerClassSchema> handlers) {
-        this.handlers.addAll(handlers);
+    public void addHandlerClassCollection(Collection<HandlerClass> handlers) {
+        this.handlerClasses.addAll(handlers);
     }
 }

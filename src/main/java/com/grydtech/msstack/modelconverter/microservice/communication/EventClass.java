@@ -1,4 +1,4 @@
-package com.grydtech.msstack.modelconverter.business.contract;
+package com.grydtech.msstack.modelconverter.microservice.communication;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class ContractResponse extends ContractCommunication {
+public final class EventClass extends CommunicationClass {
 }

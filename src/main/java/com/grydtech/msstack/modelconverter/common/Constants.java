@@ -9,7 +9,11 @@ public class Constants {
     public final static String HANDLER_CLASS_SUFFIX = "_handler";
     public final static String ENTITY_CLASS_SUFFIX = "_entity";
     public final static String EVENT_CLASS_SUFFIX = "_event";
-    public final static List<String> HANDLER_TYPES = new ArrayList<>();
+    public final static String REQUEST_CLASS_SUFFIX = "_request";
+    public final static String RESPONSE_CLASS_SUFFIX = "_response";
+    public final static String COMMAND_HANDLER_TYPE = "command";
+    public final static String QUERY_HANDLER_TYPE = "query";
+    public final static String EVENT_HANDLER_TYPE = "event";
     public final static List<String> BASE_TYPES = new ArrayList<>();
 
     static {
@@ -19,11 +23,6 @@ public class Constants {
         BASE_TYPES.add("long");
         BASE_TYPES.add("float");
         BASE_TYPES.add("boolean");
-
-        HANDLER_TYPES.add("command");
-        HANDLER_TYPES.add("query");
-        HANDLER_TYPES.add("event");
-
     }
 
     private Constants() {

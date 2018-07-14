@@ -2,8 +2,8 @@ package com.grydtech.msstack.modelconverter.services;
 
 import com.grydtech.msstack.modelconverter.business.BusinessModel;
 import com.grydtech.msstack.modelconverter.microservice.MicroServiceModel;
-import com.grydtech.msstack.modelconverter.services.impl.ModelConverterImpl;
-import com.grydtech.msstack.modelconverter.services.impl.ModelReaderImpl;
+import com.grydtech.msstack.modelconverter.services.impl.DefaultModelConverter;
+import com.grydtech.msstack.modelconverter.services.impl.DefaultModelReader;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,7 +11,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class ModelReaderImplTest {
+public class DefaultModelReaderTest {
     @Test
     public void readBusinessModelTest() {
         File jsonFile = null;
@@ -21,8 +21,8 @@ public class ModelReaderImplTest {
             e.printStackTrace();
         }
 
-        BusinessModel businessModel = new ModelReaderImpl().readBusinessModel(jsonFile);
-        List<MicroServiceModel> microServiceModels = new ModelConverterImpl().convertToMicroServiceModel(businessModel);
+        BusinessModel businessModel = new DefaultModelReader().readBusinessModel(jsonFile);
+        List<MicroServiceModel> microServiceModels = new DefaultModelConverter().convertToMicroServiceModel(businessModel);
 
         Assert.assertNotNull(microServiceModels.get(0));
     }

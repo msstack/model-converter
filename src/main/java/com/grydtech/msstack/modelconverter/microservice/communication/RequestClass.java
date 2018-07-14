@@ -5,5 +5,5 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public final class RequestClassSchema extends CommunicationClassSchema {
+public final class RequestClass extends CommunicationClass {
 }
