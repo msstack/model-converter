@@ -52,7 +52,11 @@ public class DefaultModelConverter implements ModelConverter {
         });
 
         extractedEntities.forEach(businessEntity -> {
-            microServiceModel.addEntityClass(ModelConverterUtil.generateEntityClassSchema(businessEntity));
+            if (entities.contains(businessEntity)) {
+                microServiceModel.addEntityClass(ModelConverterUtil.generateEntityClassSchema(businessEntity, true));
+            } else {
+                microServiceModel.addEntityClass(ModelConverterUtil.generateEntityClassSchema(businessEntity, false));
+            }
         });
 
         extractedRequests.forEach(request -> {
