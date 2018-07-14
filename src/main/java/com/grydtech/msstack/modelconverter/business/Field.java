@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class Field {
     private String name;
     private String type;
-    @JsonIgnore
     private boolean array;
     @JsonIgnore
     private BusinessEntity entity;
