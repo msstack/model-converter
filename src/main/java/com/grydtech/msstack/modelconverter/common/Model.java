@@ -1,13 +1,10 @@
 package com.grydtech.msstack.modelconverter.common;
 
-public class Model {
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+public abstract class Model {
     private String version;
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
 }

@@ -1,17 +1,11 @@
 package com.grydtech.msstack.modelconverter.microservice;
 
-public class ClassSchema {
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+public abstract class ClassSchema {
+    private String id;
     private String name;
-
-    public ClassSchema(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }
