@@ -64,7 +64,9 @@ public class DefaultModelReader implements ModelReader {
 
         businessModel.getEvents().forEach(event -> {
             event.getFields().stream().filter(field -> !Constants.BASE_TYPES.contains(field.getType())).forEach(field -> field.setEntity(entityMap.get(field.getType())));
-            entityMap.get(event.getEntityId()).addEvent(event);
+            BusinessEntity entity = entityMap.get(event.getEntityId());
+            event.setEventGroup(entity.getName());
+            entity.addEvent(event);
             eventMap.put(event.getId(), event);
         });
 

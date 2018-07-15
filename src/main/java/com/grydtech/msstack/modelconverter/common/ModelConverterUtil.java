@@ -123,6 +123,7 @@ public final class ModelConverterUtil {
         EventClass eventClassSchema = new EventClass();
         eventClassSchema.setId(businessEvent.getId());
         eventClassSchema.setName(businessEvent.getName() + Constants.EVENT_CLASS_SUFFIX);
+        eventClassSchema.setEventGroup(businessEvent.getEventGroup());
         businessEvent.getFields().forEach(field -> eventClassSchema.addAttribute(generateClassAttribute(field)));
 
         return eventClassSchema;
