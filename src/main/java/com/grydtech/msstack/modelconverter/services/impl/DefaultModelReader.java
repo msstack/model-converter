@@ -70,8 +70,14 @@ public class DefaultModelReader implements ModelReader {
 
         businessModel.getContracts().forEach(businessContract -> {
             businessContract.setEntity(entityMap.get(businessContract.getEntityId()));
-            businessContract.setRequest(requestMap.get(businessContract.getRequestId()));
-            businessContract.setResponse(responseMap.get(businessContract.getResponseId()));
+
+            if (businessContract.getHandler().getType().equals(Constants.EVENT_HANDLER_TYPE)) {
+                businessContract.setRequest(eventMap.get(businessContract.getRequestId()));
+            } else {
+                businessContract.setRequest(requestMap.get(businessContract.getRequestId()));
+                businessContract.setResponse(responseMap.get(businessContract.getResponseId()));
+            }
+
             businessContract.getEventIds().forEach(id -> {
                 businessContract.addEvent(eventMap.get(id));
             });

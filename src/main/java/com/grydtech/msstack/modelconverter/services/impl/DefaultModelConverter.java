@@ -8,9 +8,10 @@ import com.grydtech.msstack.modelconverter.business.contract.BusinessContract;
 import com.grydtech.msstack.modelconverter.business.entity.BusinessEntity;
 import com.grydtech.msstack.modelconverter.business.server.BusinessServer;
 import com.grydtech.msstack.modelconverter.common.Constants;
+import com.grydtech.msstack.modelconverter.common.ModelComponentWrapper;
 import com.grydtech.msstack.modelconverter.microservice.MicroServiceModel;
 import com.grydtech.msstack.modelconverter.services.ModelConverter;
-import com.grydtech.msstack.modelconverter.services.ModelConverterUtil;
+import com.grydtech.msstack.modelconverter.common.ModelConverterUtil;
 
 import java.util.*;
 
@@ -30,46 +31,67 @@ public class DefaultModelConverter implements ModelConverter {
         microServiceModel.setServiceName(businessServer.getName() + Constants.SERVICE_SUFFIX);
         microServiceModel.setVersion(version);
 
-        final List<BusinessEntity> entities = new ArrayList<>();
-        final List<BusinessRequest> requests = new ArrayList<>();
-        final List<BusinessResponse> responses = new ArrayList<>();
-        final List<BusinessContract> contracts = new ArrayList<>();
+        final Collection<BusinessContract> contracts = new ArrayList<>();
+        final Collection<BusinessEntity> entities = new ArrayList<>();
+        final Collection<BusinessRequest> requests = new ArrayList<>();
+        final Collection<BusinessResponse> responses = new ArrayList<>();
 
         businessServer.getContracts().forEach(businessContract -> {
             contracts.add(businessContract);
             entities.add(businessContract.getEntity());
-            requests.add(businessContract.getRequest());
-            responses.add(businessContract.getResponse());
-        });
 
-        final Collection<BusinessEntity> extractedEntities = ModelConverterUtil.extractEntities(entities);
-        final Collection<BusinessRequest> extractedRequests = ModelConverterUtil.extractRequests(requests);
-        final Collection<BusinessResponse> extractedResponses = ModelConverterUtil.extractResponses(responses);
-        final Collection<BusinessEvent> extractedEvents = ModelConverterUtil.extractEvents(entities, contracts);
-
-        contracts.forEach(businessContract -> {
-            microServiceModel.addHandlerClass(ModelConverterUtil.generateHandlerClassSchema(businessContract));
-        });
-
-        extractedEntities.forEach(businessEntity -> {
-            if (entities.contains(businessEntity)) {
-                microServiceModel.addEntityClass(ModelConverterUtil.generateEntityClassSchema(businessEntity, true));
-            } else {
-                microServiceModel.addEntityClass(ModelConverterUtil.generateEntityClassSchema(businessEntity, false));
+            if (!businessContract.getHandler().getType().equals(Constants.EVENT_HANDLER_TYPE)) {
+                requests.add((BusinessRequest) businessContract.getRequest());
+                responses.add((BusinessResponse) businessContract.getResponse());
             }
         });
 
-        extractedRequests.forEach(request -> {
-            microServiceModel.addRequestClass(ModelConverterUtil.generateRequestClassSchema(request));
-        });
+        final Collection<BusinessEntity> extractedEntities = ModelConverterUtil.extractEntities(entities);
+        final Collection<BusinessEvent> extractedEvents = ModelConverterUtil.extractEvents(entities, contracts);
 
-        extractedResponses.forEach(response -> {
-            microServiceModel.addResponseClass(ModelConverterUtil.generateResponseClassSchema(response));
-        });
+        contracts.stream()
+                .map(ModelComponentWrapper::new)
+                .distinct()
+                .map(ModelComponentWrapper::unwrap)
+                .forEach(businessContract -> {
+                    microServiceModel.addHandlerClass(ModelConverterUtil.generateHandlerClassSchema(businessContract));
+                });
 
-        extractedEvents.forEach(event -> {
-            microServiceModel.addEventClass(ModelConverterUtil.generateEventClassSchema(event));
-        });
+        requests.stream()
+                .map(ModelComponentWrapper::new)
+                .distinct()
+                .map(ModelComponentWrapper::unwrap)
+                .forEach(request -> {
+                    microServiceModel.addRequestClass(ModelConverterUtil.generateRequestClassSchema(request));
+                });
+
+        responses.stream()
+                .map(ModelComponentWrapper::new)
+                .distinct()
+                .map(ModelComponentWrapper::unwrap)
+                .forEach(response -> {
+                    microServiceModel.addResponseClass(ModelConverterUtil.generateResponseClassSchema(response));
+                });
+
+        extractedEntities.stream()
+                .map(ModelComponentWrapper::new)
+                .distinct()
+                .map(ModelComponentWrapper::unwrap)
+                .forEach(businessEntity -> {
+                    if (entities.contains(businessEntity)) {
+                        microServiceModel.addEntityClass(ModelConverterUtil.generateEntityClassSchema(businessEntity, true));
+                    } else {
+                        microServiceModel.addEntityClass(ModelConverterUtil.generateEntityClassSchema(businessEntity, false));
+                    }
+                });
+
+        extractedEvents.stream()
+                .map(ModelComponentWrapper::new)
+                .distinct()
+                .map(ModelComponentWrapper::unwrap)
+                .forEach(event -> {
+                    microServiceModel.addEventClass(ModelConverterUtil.generateEventClassSchema(event));
+                });
 
         return microServiceModel;
     }

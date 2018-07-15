@@ -1,6 +1,7 @@
 package com.grydtech.msstack.modelconverter.microservice.handler;
 
 import com.grydtech.msstack.modelconverter.microservice.ClassSchema;
+import com.grydtech.msstack.modelconverter.microservice.communication.CommunicationClass;
 import com.grydtech.msstack.modelconverter.microservice.communication.EventClass;
 import com.grydtech.msstack.modelconverter.microservice.communication.RequestClass;
 import com.grydtech.msstack.modelconverter.microservice.communication.ResponseClass;
@@ -16,8 +17,8 @@ import java.util.List;
 public class HandlerClass extends ClassSchema {
 
     private String type;
-    private RequestClass requestClass;
-    private ResponseClass responseClass;
+    private CommunicationClass requestClass; // when the handler type is event this will be EventClass
+    private CommunicationClass responseClass; // when the handler type is event this will be null
     private final List<EventClass> eventClasses = new ArrayList<>();
 
     public void addEvent(EventClass event) {

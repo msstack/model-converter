@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class BusinessEvent extends BusinessCommunication {
+public final class BusinessEvent extends BusinessCommunication {
     private String entityId;
 }

@@ -117,59 +117,50 @@
       "id": "cn4",
       "entity_id": "en1",
       "handler": {
-        "type": "query",
-        "name": "get_item"
-      },
-      "request_id": "req1",
-      "response_id": "res1",
-      "event_ids": [
-      ]
-    },
-    {
-      "id": "cn5",
-      "entity_id": "en1",
-      "handler": {
         "type": "command",
-        "name": "add_item"
+        "name": "create_item"
       },
       "request_id": "req1",
       "response_id": "res1",
       "event_ids": [
         "ev4"
       ]
+    },
+    {
+      "id": "cn5",
+      "entity_id": "en2",
+      "handler": {
+        "type": "event",
+        "name": "order_finalized"
+      },
+      "request_id": "ev3",
+      "event_ids": []
     }
   ],
   "requests": [
     {
       "id": "req1",
-      "name": "add_order_item",
+      "name": "generic_command",
       "type": "command",
-      "fields": [
-        {
-          "name": "item_code",
-          "type": "string"
-        },
-        {
-          "name": "quantity",
-          "type": "integer"
-        }
-      ]
+      "fields": []
+    },
+    {
+      "id": "req2",
+      "name": "generic_query",
+      "type": "query",
+      "fields": []
     }
   ],
   "responses": [
     {
       "id": "res1",
-      "name": "add_order_item",
-      "fields": [
-        {
-          "name": "item_code",
-          "type": "string"
-        },
-        {
-          "name": "status",
-          "type": "integer"
-        }
-      ]
+      "name": "generic_command",
+      "fields": []
+    },
+    {
+      "id": "res2",
+      "name": "generic_query",
+      "fields": []
     }
   ],
   "servers": [
@@ -179,7 +170,8 @@
       "contract_ids": [
         "cn1",
         "cn2",
-        "cn3"
+        "cn3",
+        "cn5"
       ]
     },
     {
