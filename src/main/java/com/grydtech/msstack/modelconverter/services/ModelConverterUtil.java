@@ -68,7 +68,7 @@ public final class ModelConverterUtil {
     public static Collection<BusinessEvent> extractEvents(Collection<BusinessEntity> entities, Collection<BusinessContract> contracts) {
         final Map<String, BusinessEvent> eventMap = new HashMap<>();
 
-        entities.stream().filter(BusinessEntity::isMainEntity).forEach(businessEntity -> {
+        entities.forEach(businessEntity -> {
             businessEntity.getEvents().forEach(event -> {
                 if (!eventMap.containsKey(event.getId())) {
                     eventMap.put(event.getId(), event);
@@ -87,11 +87,11 @@ public final class ModelConverterUtil {
         return eventMap.values();
     }
 
-    public static EntityClass generateEntityClassSchema(BusinessEntity businessEntity) {
+    public static EntityClass generateEntityClassSchema(BusinessEntity businessEntity, boolean mainEntity) {
         EntityClass entityClass = new EntityClass();
         entityClass.setId(businessEntity.getId());
         entityClass.setName(businessEntity.getName() + Constants.ENTITY_CLASS_SUFFIX);
-        entityClass.setMainEntity(businessEntity.isMainEntity());
+        entityClass.setMainEntity(mainEntity);
         businessEntity.getFields().forEach(field -> {
             entityClass.addAttribute(generateClassAttribute(field));
         });
@@ -154,7 +154,7 @@ public final class ModelConverterUtil {
         attribute.setName(field.getName());
         attribute.setArray(field.isArray());
         if (field.getEntity() != null) {
-            attribute.setType(field.getEntity().getName());
+            attribute.setType(field.getEntity().getName() + Constants.ENTITY_CLASS_SUFFIX);
             attribute.setEntity(true);
         } else {
             attribute.setType(field.getType());

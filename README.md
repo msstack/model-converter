@@ -31,21 +31,11 @@ mvn clean install
 
 ## Add as a project dependency
 1. Add snapshot version to maven pom file
-```xml
-<!-- load version with latest commit -->
-<dependency>
-    <groupId>com.grydtech.msstack</groupId>
-    <artifactId>model-converter</artifactId>
-    <version>-SNAPSHOT</version>
-</dependency>
-```
-2. Import Load business model from json file
-3. Convert into micro service models
-4. Use model for further development or write model into a json file
+2. Follow these [instruction](https://packagecloud.io/msstack/msstack-artifacts) when adding dependency
 ```java
 File file = new File(Sample.class.getResource("/sample.json").toURI());
-ModelReader modelReader = new ModelReaderJackson();
-ModelConverter modelConverter = new ModelConverterEntityBased();
+ModelReader modelReader = new DefaultModelReader();
+ModelConverter modelConverter = new DefaultModelConverter();
 BusinessModel businessModel = modelReader.readBusinessModel(file);
 List<MicroServiceModel> microServiceModels = modelConverter.convertToMicroServiceModel(businessModel);
 ```

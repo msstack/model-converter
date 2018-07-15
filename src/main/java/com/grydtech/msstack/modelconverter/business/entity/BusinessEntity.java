@@ -17,8 +17,6 @@ public class BusinessEntity {
     private String name;
     private final List<Field> fields = new ArrayList<>();
     @JsonIgnore
-    private boolean mainEntity;
-    @JsonIgnore
     private final List<BusinessEvent> events = new ArrayList<>();
 
     public void addField(Field field) {

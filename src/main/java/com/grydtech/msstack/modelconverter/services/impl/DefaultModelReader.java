@@ -69,7 +69,6 @@ public class DefaultModelReader implements ModelReader {
         });
 
         businessModel.getContracts().forEach(businessContract -> {
-            entityMap.get(businessContract.getEntityId()).setMainEntity(true);
             businessContract.setEntity(entityMap.get(businessContract.getEntityId()));
             businessContract.setRequest(requestMap.get(businessContract.getRequestId()));
             businessContract.setResponse(responseMap.get(businessContract.getResponseId()));
