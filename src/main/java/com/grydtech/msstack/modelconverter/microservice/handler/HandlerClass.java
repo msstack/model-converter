@@ -17,6 +17,7 @@ import java.util.List;
 public class HandlerClass extends ClassSchema {
 
     private String type;
+    private String endPoint; // when the handler type is event this will be null
     private CommunicationClass requestClass; // when the handler type is event this will be EventClass
     private CommunicationClass responseClass; // when the handler type is event this will be null
     private final List<EventClass> eventClasses = new ArrayList<>();

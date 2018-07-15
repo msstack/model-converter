@@ -87,6 +87,7 @@ public final class ModelConverterUtil {
         handlerClass.setType(businessContract.getHandler().getType());
         handlerClass.setRequestClass(requestClassSchema);
         handlerClass.setResponseClass(responseClassSchema);
+        handlerClass.setEndPoint(businessContract.getEntity().getName() + "/" + businessContract.getHandler().getName());
 
         businessContract.getEvents().forEach(event -> {
             handlerClass.addEvent(generateEventClassSchema(event));
