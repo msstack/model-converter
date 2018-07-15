@@ -88,6 +88,10 @@ public final class ModelConverterUtil {
         handlerClass.setRequestClass(requestClassSchema);
         handlerClass.setResponseClass(responseClassSchema);
 
+        businessContract.getEvents().forEach(event -> {
+            handlerClass.addEvent(generateEventClassSchema(event));
+        });
+
         return handlerClass;
     }
 
