@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class BusinessContractHandler {
+public final class BusinessContractHandler {
     private String type;
     private String name;
 }

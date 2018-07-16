@@ -1,4 +1,4 @@
-package com.grydtech.msstack.modelconverter.services;
+package com.grydtech.msstack.modelconverter.common;
 
 import com.grydtech.msstack.modelconverter.business.Field;
 import com.grydtech.msstack.modelconverter.business.communication.BusinessEvent;
@@ -6,15 +6,17 @@ import com.grydtech.msstack.modelconverter.business.communication.BusinessReques
 import com.grydtech.msstack.modelconverter.business.communication.BusinessResponse;
 import com.grydtech.msstack.modelconverter.business.contract.BusinessContract;
 import com.grydtech.msstack.modelconverter.business.entity.BusinessEntity;
-import com.grydtech.msstack.modelconverter.common.Constants;
 import com.grydtech.msstack.modelconverter.microservice.Attribute;
+import com.grydtech.msstack.modelconverter.microservice.communication.CommunicationClass;
 import com.grydtech.msstack.modelconverter.microservice.communication.EventClass;
 import com.grydtech.msstack.modelconverter.microservice.communication.RequestClass;
 import com.grydtech.msstack.modelconverter.microservice.communication.ResponseClass;
 import com.grydtech.msstack.modelconverter.microservice.entity.EntityClass;
 import com.grydtech.msstack.modelconverter.microservice.handler.HandlerClass;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public final class ModelConverterUtil {
 
@@ -23,68 +25,33 @@ public final class ModelConverterUtil {
 
     // recursively search for entities (sub entities) and create class schemas
     public static Collection<BusinessEntity> extractEntities(Collection<BusinessEntity> baseEntities) {
-        // ToDo: Validations not implemented
-        final Map<String, BusinessEntity> entityMap = new HashMap<>();
         final List<BusinessEntity> entities = new ArrayList<>(baseEntities);
 
-        while (!entities.isEmpty()) {
-            BusinessEntity entity = entities.get(0);
+        for (int i = 0; i < entities.size(); i++) {
+            BusinessEntity entity = entities.get(i);
             entity.getFields().stream().filter(field -> field.getEntity() != null).forEach(field -> entities.add(field.getEntity()));
-
-            if (!entityMap.containsKey(entity.getId())) {
-                entityMap.put(entity.getId(), entity);
-            }
-
-            entities.remove(0);
         }
 
-        return entityMap.values();
-    }
-
-    public static Collection<BusinessRequest> extractRequests(Collection<BusinessRequest> requests) {
-        final Map<String, BusinessRequest> requestMap = new HashMap<>();
-
-        requests.forEach(request -> {
-            if (!requestMap.containsKey(request.getId())) {
-                requestMap.put(request.getId(), request);
-            }
-        });
-
-        return requestMap.values();
-    }
-
-    public static Collection<BusinessResponse> extractResponses(Collection<BusinessResponse> responses) {
-        final Map<String, BusinessResponse> responseMap = new HashMap<>();
-
-        responses.forEach(response -> {
-            if (!responseMap.containsKey(response.getId())) {
-                responseMap.put(response.getId(), response);
-            }
-        });
-
-        return responseMap.values();
+        return entities;
     }
 
     public static Collection<BusinessEvent> extractEvents(Collection<BusinessEntity> entities, Collection<BusinessContract> contracts) {
-        final Map<String, BusinessEvent> eventMap = new HashMap<>();
+        final List<BusinessEvent> events = new ArrayList<>();
 
         entities.forEach(businessEntity -> {
-            businessEntity.getEvents().forEach(event -> {
-                if (!eventMap.containsKey(event.getId())) {
-                    eventMap.put(event.getId(), event);
-                }
-            });
+            events.addAll(businessEntity.getEvents());
         });
 
         contracts.forEach(businessContract -> {
-            businessContract.getEvents().forEach(event -> {
-                if (!eventMap.containsKey(event.getId())) {
-                    eventMap.put(event.getId(), event);
-                }
-            });
+            if (businessContract.getHandler().getType().equals(Constants.EVENT_HANDLER_TYPE)) {
+                BusinessEvent event = (BusinessEvent) businessContract.getRequest();
+                events.add(event);
+            }
+
+            events.addAll(businessContract.getEvents());
         });
 
-        return eventMap.values();
+        return events;
     }
 
     public static EntityClass generateEntityClassSchema(BusinessEntity businessEntity, boolean mainEntity) {
@@ -103,8 +70,16 @@ public final class ModelConverterUtil {
     }
 
     public static HandlerClass generateHandlerClassSchema(BusinessContract businessContract) {
-        RequestClass requestClassSchema = generateRequestClassSchema(businessContract.getRequest());
-        ResponseClass responseClassSchema = generateResponseClassSchema(businessContract.getResponse());
+        CommunicationClass requestClassSchema;
+        CommunicationClass responseClassSchema;
+
+        if (businessContract.getHandler().getType().equals(Constants.EVENT_HANDLER_TYPE)) {
+            requestClassSchema = generateEventClassSchema((BusinessEvent) businessContract.getRequest());
+            responseClassSchema = null;
+        } else {
+            requestClassSchema = generateRequestClassSchema((BusinessRequest) businessContract.getRequest());
+            responseClassSchema = generateResponseClassSchema((BusinessResponse) businessContract.getResponse());
+        }
 
         HandlerClass handlerClass = new HandlerClass();
         handlerClass.setId(businessContract.getId());
@@ -112,6 +87,11 @@ public final class ModelConverterUtil {
         handlerClass.setType(businessContract.getHandler().getType());
         handlerClass.setRequestClass(requestClassSchema);
         handlerClass.setResponseClass(responseClassSchema);
+        handlerClass.setEndPoint(businessContract.getEntity().getName() + "/" + businessContract.getHandler().getName());
+
+        businessContract.getEvents().forEach(event -> {
+            handlerClass.addEvent(generateEventClassSchema(event));
+        });
 
         return handlerClass;
     }
@@ -144,6 +124,7 @@ public final class ModelConverterUtil {
         EventClass eventClassSchema = new EventClass();
         eventClassSchema.setId(businessEvent.getId());
         eventClassSchema.setName(businessEvent.getName() + Constants.EVENT_CLASS_SUFFIX);
+        eventClassSchema.setEventGroup(businessEvent.getEventGroup());
         businessEvent.getFields().forEach(field -> eventClassSchema.addAttribute(generateClassAttribute(field)));
 
         return eventClassSchema;

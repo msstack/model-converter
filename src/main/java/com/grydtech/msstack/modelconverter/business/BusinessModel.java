@@ -18,7 +18,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class BusinessModel extends Model {
+public final class BusinessModel extends Model {
 
     private final List<BusinessEntity> entities = new ArrayList<>();
     private final List<BusinessEvent> events = new ArrayList<>();

@@ -3,17 +3,19 @@ package com.grydtech.msstack.modelconverter.business.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grydtech.msstack.modelconverter.business.Field;
 import com.grydtech.msstack.modelconverter.business.communication.BusinessEvent;
+import com.grydtech.msstack.modelconverter.common.ModelComponent;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class BusinessEntity {
-    private String id;
+public class BusinessEntity extends ModelComponent {
     private String name;
     private final List<Field> fields = new ArrayList<>();
     @JsonIgnore

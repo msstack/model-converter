@@ -64,14 +64,22 @@ public class DefaultModelReader implements ModelReader {
 
         businessModel.getEvents().forEach(event -> {
             event.getFields().stream().filter(field -> !Constants.BASE_TYPES.contains(field.getType())).forEach(field -> field.setEntity(entityMap.get(field.getType())));
-            entityMap.get(event.getEntityId()).addEvent(event);
+            BusinessEntity entity = entityMap.get(event.getEntityId());
+            event.setEventGroup(entity.getName());
+            entity.addEvent(event);
             eventMap.put(event.getId(), event);
         });
 
         businessModel.getContracts().forEach(businessContract -> {
             businessContract.setEntity(entityMap.get(businessContract.getEntityId()));
-            businessContract.setRequest(requestMap.get(businessContract.getRequestId()));
-            businessContract.setResponse(responseMap.get(businessContract.getResponseId()));
+
+            if (businessContract.getHandler().getType().equals(Constants.EVENT_HANDLER_TYPE)) {
+                businessContract.setRequest(eventMap.get(businessContract.getRequestId()));
+            } else {
+                businessContract.setRequest(requestMap.get(businessContract.getRequestId()));
+                businessContract.setResponse(responseMap.get(businessContract.getResponseId()));
+            }
+
             businessContract.getEventIds().forEach(id -> {
                 businessContract.addEvent(eventMap.get(id));
             });

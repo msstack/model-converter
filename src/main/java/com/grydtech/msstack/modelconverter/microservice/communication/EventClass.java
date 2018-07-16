@@ -8,4 +8,5 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public final class EventClass extends CommunicationClass {
+    private String eventGroup;
 }

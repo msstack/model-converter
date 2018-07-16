@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class BusinessRequest extends BusinessCommunication {
+public final class BusinessRequest extends BusinessCommunication {
     private String type;
 }

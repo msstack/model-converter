@@ -39,3 +39,109 @@ ModelConverter modelConverter = new DefaultModelConverter();
 BusinessModel businessModel = modelReader.readBusinessModel(file);
 List<MicroServiceModel> microServiceModels = modelConverter.convertToMicroServiceModel(businessModel);
 ```
+
+## Sample model specification
+```json
+{
+  "version": "0.0.1",
+  "entities": [
+    {
+      "id": "en1",
+      "name": "item",
+      "fields": [
+        {
+          "name": "item_code",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "id": "en2",
+      "name": "order",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "string"
+        },
+        {
+          "name": "items",
+          "type": "en1",
+          "array": true
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "ev1",
+      "name": "order_created",
+      "entity_id": "en2"
+    }
+  ],
+  "contracts": [
+    {
+      "id": "cn1",
+      "entity_id": "en2",
+      "handler": {
+        "type": "command",
+        "name": "create_order"
+      },
+      "request_id": "req1",
+      "response_id": "res1",
+      "event_ids": [
+        "ev1"
+      ]
+    },
+    {
+      "id": "cn1",
+      "entity_id": "en2",
+      "handler": {
+        "type": "event",
+        "name": "order_created"
+      },
+      "request_id": "ev1",
+      "event_ids": []
+    }
+  ],
+  "requests": [
+    {
+      "id": "req1",
+      "name": "create_order",
+      "type": "command",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "responses": [
+    {
+      "id": "res1",
+      "name": "create_order",
+      "fields": []
+    }
+  ],
+  "servers": [
+    {
+      "id": "sv1",
+      "name": "order_management",
+      "contract_ids": [
+        "cn1"
+      ]
+    },
+    {
+      "id": "sv2",
+      "name": "order_logging",
+      "contract_ids": [
+        "cn2"
+      ]
+    }
+  ]
+}
+```

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class Field {
+public final class Field {
     private String name;
     private String type;
     private boolean array;
