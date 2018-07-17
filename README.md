@@ -1,11 +1,11 @@
 # Model Converter
-[![Build Status](https://www.travis-ci.org/msstack/model-converter.svg?branch=master)](https://www.travis-ci.org/msstack/model-converter)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3e163e0a34d04e85b688c8db7540adb7)](https://www.codacy.com/app/grydtech/model-converter?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=msstack/model-converter&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://travis-ci.com/msstack/model-converter.svg?branch=master)](https://travis-ci.com/msstack/model-converter)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b657a3dfb6cc4b8082a346e85e97113f)](https://www.codacy.com/app/msstack/model-converter?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=msstack/model-converter&amp;utm_campaign=Badge_Grade)
 
 ## About this project
 Convert business model into micro service specification
 
->Note: For further informaions about MSstack [msstack.ml](http://msstack.grydtech.com)
+>Note: For further informaions about MSstack [https://msstack.grydtech.com](https://msstack.grydtech.com)
 
 ## Build from source
 

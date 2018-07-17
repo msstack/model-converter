@@ -5,17 +5,22 @@ jdk:
 branches:
   only:
     - master
-
+    
 before_install:
-  - sudo apt-get install jq
-  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/2.0.2/codacy-coverage-reporter-2.0.2-assembly.jar
+  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.1/codacy-coverage-reporter-4.0.1-assembly.jar
 
 after_success:
-  - mvn clean test jacoco:report
-  - cp target/site/jacoco/jacoco.xml jacoco.xml
-  - java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter -l Java -r jacoco.xml
+  - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r target/site/jacoco/jacoco.xml
 
 deploy:
-  provider: script
-  script: "cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy"
-  skip_cleanup: true
+  provider: packagecloud
+  repository: "msstack-artifacts"
+  username: "msstack"
+  token:
+    secure: "rV44TG1A34KysVn1yDCqCgDnvRK6SG2pQRdVpSHBsaDY/cRCEaSiJsPeINhTLNCD0/7fp7TjXrwhPATZi8FFNW0ceHGXvgk1uApNVlUPQkG7/U3K+OgxCOQuZtWgG6udw8GlAe8ITDM+leYCevhyu0Qu4u5c1Dx6MV/YeH49agD2I8zQpy6louDlTZtcUUF9F9UNkrTJJkcPLO3nEpi+mzUUkSkrevR2aP3fHBQG9rcfc1ItXf9a/dgAa/nFZuduWja/O0ScWlKSQERPCBCSaBDr4rqOjzWhpM5FPKYtQxND0ySL5JajV6uC/sS5VsdPRQPn7xNI2jhw969OmOmSdHnO6mu1MoVqi5pFO21kDAew4mRe7rCQyOcLSn7T+rlcssgzDzpd/a4JbGnXE+w41ACPLw5vetxvf4U4qDETYOjm4JDQBg7NQDiINgO0v7aC8peYASXaQdHKREUyO1WEH16GE9ftDXY8RWFcCHlwocEThTfmVg2a1LthkvdG8dlt/aFHLJ85kSzWFjmdkL0GwE92sd++tZOXoXAjaAUIqLp2t3Cl/sr7l1138j+m7LIU5paoRcbKoJwKUDA7FPVFfMFEdAtUi0BjLFnDQp6mkPI9N+oDafzRMy08/L7HD+M6ncsUPJjvfCu9Wl6kJWPFv7yynCQ0qeENqptcYAEhhkU="
+  on:
+      branch: production
+
+env:
+  global:
+    - secure: "eRUy7rii/PNyq+5fdGZWDrQ378Q3CF5Y26+3C27ZBNXmZVHd2Rgx8ntFvBYY7opKMDYtQhIVKy17DusxduS81mHoZrjeXKtnrkzZrIfxZRq5sC4oBlXB+bBcaLyzk9ngNC1FxvJwFoMWzfke4rh2n/Zvw9XAIgI9c4u5YvsGewYHtCYoXyxYHKH/+/GkvS8QzWI8PyEgxqzBLl8b2xOFPNlOhv/bVSAz8fSLi2N2xA4ZRZKFJWe7JcAdP3DXlD2IRehShNUop88NyDwgFOcidpVA0JpilKXiP75bjGhH0AWwpdGvyyqsZjimxej3ZRkQqB5IJIdB2DRT2L3i6vWPzfz/TRkHrXD4qNsKfU9fRjpQGGuWgwnUor//GnhfkIq+9wcxUQreFHbxHNOLuKaQ9O1v5VbljJFRVZbVoG3nGk0eNR6Df/EZIRGwRkmPv+eLXdiMChvGWTkxlroUmDoaF/dWNxkj80Xemn15yfJWfyFkhoe7oy2HtygF1VGxtGlkvRbWDDV4iSYVtd3xeo2kRc44c/jCtIueo/WTiiozDiLL6XAPdhCjyv5q4JzGCMa5YPqs5WgeH0fITCXicrezPOQnTQpg9qp2xlWxa9O30CVYmc8dvJSCdn2AsCIUqWMtXRPDx0T472GuZxg2NwBlgji+a4WibOlWhbZ9Fjc5bNg="
