@@ -1,6 +1,7 @@
 # Model Converter
 [![Build Status](https://travis-ci.com/msstack/model-converter.svg?branch=master)](https://travis-ci.com/msstack/model-converter)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b657a3dfb6cc4b8082a346e85e97113f)](https://www.codacy.com/app/msstack/model-converter?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=msstack/model-converter&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/b657a3dfb6cc4b8082a346e85e97113f)](https://www.codacy.com/app/msstack/model-converter?utm_source=github.com&utm_medium=referral&utm_content=msstack/model-converter&utm_campaign=Badge_Coverage)
 
 ## About this project
 Convert business model into micro service specification
