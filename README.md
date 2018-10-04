@@ -44,7 +44,7 @@ List<MicroServiceModel> microServiceModels = modelConverter.convertToMicroServic
 ## Sample model specification
 ```json
 {
-  "schemaVersion": "0.0.2",
+  "schemaVersion": "0.0.3",
   "entities": [
     {
       "name": "item",
@@ -80,8 +80,51 @@ List<MicroServiceModel> microServiceModels = modelConverter.convertToMicroServic
   "events": [
     {
       "name": "order_created",
-      "entity": "{ref:entities#order}"
-      "description": ""
+      "entity": "{ref:entities#order}",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "string"
+        },
+        {
+          "name": "customer_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "order_validated",
+      "entity": "{ref:entities#order}",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "order_accepted",
+      "entity": "{ref:entities#order}",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "order_rejected",
+      "entity": "{ref:entities#order}",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "string"
+        }
+      ]
     }
   ],
   "requests": [
@@ -97,7 +140,7 @@ List<MicroServiceModel> microServiceModels = modelConverter.convertToMicroServic
   ],
   "responses": [
     {
-      "name": "order_created",
+      "name": "order_accepted",
       "fields": [
         {
           "name": "order_id",
@@ -106,8 +149,12 @@ List<MicroServiceModel> microServiceModels = modelConverter.convertToMicroServic
       ]
     },
     {
-      "name": "order_not_created",
+      "name": "order_rejected",
       "fields": [
+        {
+          "name": "order_id",
+          "type": "string"
+        },
         {
           "name": "message",
           "type": "string"
@@ -118,50 +165,36 @@ List<MicroServiceModel> microServiceModels = modelConverter.convertToMicroServic
   "contracts": [
     {
       "name": "create_order",
-      "description": "creates an order if details are valid, else notify user that details are invalid",
+      "description": "creates an order in pending state",
       "entity": "{ref:entities#order}",
       "type": "COMMAND",
-      "consumes": "{ref:request#create_order}",
+      "consumes": "{ref:requests#create_order}",
       "produces": {
         "on_success": ["{ref:events#order_created}"],
-        "on_failure": ["{ref:events#order_not_created}"],
+        "on_failure": []
       }
     },
     {
-      "name": "order_created",
+      "name": "validate_order",
+      "description": "chech if the order is valid",
       "entity": "{ref:entities#order}",
       "type": "EVENT",
-      "consumes": "{ref:events#order_created}"
-      "generates": {
-        "on_success": ["{ref:responses#order_created}"],
+      "consumes": "{ref:events#order_created}",
+      "produces": {
+        "on_success": ["{ref:events#order_validated}"],
         "on_failure": [],
       }
     },
     {
-      "name": "order_not_created",
+      "name": "finalize_order",
+      "description": "complete creation of order",
       "entity": "{ref:entities#order}",
       "type": "EVENT",
-      "consumes": "{ref:events#order_not_created}"
-      "generates": {
-        "on_success: ["{ref:responses#order_not_created}"],
-        "on_failure": [],
+      "consumes": "{ref:events#order_validated}",
+      "produces": {
+        "on_success": ["{ref:events#order_accepted}", "{ref:responses#order_accepted}"],
+        "on_failure": ["{ref:events#order_rejected}", "{ref:responses#order_rejected}"],
       }
-    }
-  ],
-  "servers": [
-    {
-      "id": "sv1",
-      "name": "order_management",
-      "contract_ids": [
-        "cn1"
-      ]
-    },
-    {
-      "id": "sv2",
-      "name": "order_logging",
-      "contract_ids": [
-        "cn2"
-      ]
     }
   ]
 }
