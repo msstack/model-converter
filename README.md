@@ -44,78 +44,52 @@ List<MicroServiceModel> microServiceModels = modelConverter.convertToMicroServic
 ## Sample model specification
 ```json
 {
-  "version": "0.0.1",
+  "schemaVersion": "0.0.2",
   "entities": [
     {
-      "id": "en1",
       "name": "item",
       "fields": [
         {
           "name": "item_code",
-          "type": "string"
+          "type": "string",
+          "constraints": ["NOT_NULL"]
         },
         {
           "name": "name",
-          "type": "string"
+          "type": "string",
+          "constraints": ["NOT_NULL"]
         }
       ]
     },
     {
-      "id": "en2",
       "name": "order",
       "fields": [
         {
           "name": "order_id",
-          "type": "string"
+          "type": "string",
+          "constraints": ["NOT_NULL"]
         },
         {
           "name": "items",
-          "type": "en1",
-          "array": true
+          "type": "list<{ref:entities#item}>",
+          "constraints": ["NOT_NULL"]
         }
       ]
     }
   ],
   "events": [
     {
-      "id": "ev1",
       "name": "order_created",
-      "entity_id": "en2"
-    }
-  ],
-  "contracts": [
-    {
-      "id": "cn1",
-      "entity_id": "en2",
-      "handler": {
-        "type": "command",
-        "name": "create_order"
-      },
-      "request_id": "req1",
-      "response_id": "res1",
-      "event_ids": [
-        "ev1"
-      ]
-    },
-    {
-      "id": "cn1",
-      "entity_id": "en2",
-      "handler": {
-        "type": "event",
-        "name": "order_created"
-      },
-      "request_id": "ev1",
-      "event_ids": []
+      "entity": "{ref:entities#order}"
+      "description": ""
     }
   ],
   "requests": [
     {
-      "id": "req1",
       "name": "create_order",
-      "type": "command",
       "fields": [
         {
-          "name": "order_id",
+          "name": "customer_id",
           "type": "string"
         }
       ]
@@ -123,9 +97,55 @@ List<MicroServiceModel> microServiceModels = modelConverter.convertToMicroServic
   ],
   "responses": [
     {
-      "id": "res1",
+      "name": "order_created",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "order_not_created",
+      "fields": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "contracts": [
+    {
       "name": "create_order",
-      "fields": []
+      "description": "creates an order if details are valid, else notify user that details are invalid",
+      "entity": "{ref:entities#order}",
+      "type": "COMMAND",
+      "consumes": "{ref:request#create_order}",
+      "produces": {
+        "on_success": ["{ref:events#order_created}"],
+        "on_failure": ["{ref:events#order_not_created}"],
+      }
+    },
+    {
+      "name": "order_created",
+      "entity": "{ref:entities#order}",
+      "type": "EVENT",
+      "consumes": "{ref:events#order_created}"
+      "generates": {
+        "on_success": ["{ref:responses#order_created}"],
+        "on_failure": [],
+      }
+    },
+    {
+      "name": "order_not_created",
+      "entity": "{ref:entities#order}",
+      "type": "EVENT",
+      "consumes": "{ref:events#order_not_created}"
+      "generates": {
+        "on_success: ["{ref:responses#order_not_created}"],
+        "on_failure": [],
+      }
     }
   ],
   "servers": [
