@@ -1,4 +1,4 @@
-package com.grydtech.msstack.modelconverter.common;
+package com.grydtech.msstack.modelconverter.components;
 
 public class ModelComponentWrapper <T extends ModelComponent> {
     private final T t;
@@ -14,7 +14,7 @@ public class ModelComponentWrapper <T extends ModelComponent> {
     @Override
     public boolean equals(Object ot) {
         if (ot instanceof ModelComponentWrapper) {
-            return ((ModelComponentWrapper) ot).t.getId().equals(this.t.getId());
+            return ((ModelComponentWrapper) ot).t.getName().equals(this.t.getName());
         } else {
             return false;
         }
@@ -22,6 +22,6 @@ public class ModelComponentWrapper <T extends ModelComponent> {
 
     @Override
     public int hashCode() {
-        return t.getId().hashCode();
+        return t.getName().hashCode();
     }
 }

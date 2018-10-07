@@ -3,15 +3,16 @@ package com.grydtech.msstack.modelconverter.services.impl;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.grydtech.msstack.modelconverter.business.contract.BusinessContract;
-import com.grydtech.msstack.modelconverter.business.communication.BusinessEvent;
-import com.grydtech.msstack.modelconverter.business.entity.BusinessEntity;
-import com.grydtech.msstack.modelconverter.business.BusinessModel;
-import com.grydtech.msstack.modelconverter.business.communication.BusinessRequest;
-import com.grydtech.msstack.modelconverter.business.communication.BusinessResponse;
-import com.grydtech.msstack.modelconverter.common.Constants;
-import com.grydtech.msstack.modelconverter.microservice.MicroServiceModel;
+import com.grydtech.msstack.modelconverter.components.Contract;
+import com.grydtech.msstack.modelconverter.components.Event;
+import com.grydtech.msstack.modelconverter.components.Entity;
+import com.grydtech.msstack.modelconverter.models.BusinessModel;
+import com.grydtech.msstack.modelconverter.components.Request;
+import com.grydtech.msstack.modelconverter.components.Response;
+import com.grydtech.msstack.modelconverter.utils.Constants;
+import com.grydtech.msstack.modelconverter.models.MicroServiceModel;
 import com.grydtech.msstack.modelconverter.services.ModelReader;
+import com.grydtech.msstack.modelconverter.utils.Helpers;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,60 +37,63 @@ public class DefaultModelReader implements ModelReader {
             e.printStackTrace();
         }
 
-        final Map<String, BusinessEntity> entityMap = new HashMap<>();
-        final Map<String, BusinessRequest> requestMap = new HashMap<>();
-        final Map<String, BusinessResponse> responseMap = new HashMap<>();
-        final Map<String, BusinessContract> contractMap = new HashMap<>();
-        final Map<String, BusinessEvent> eventMap = new HashMap<>();
+        final Map<String, Entity> entityMap = new HashMap<>();
+        final Map<String, Request> requestMap = new HashMap<>();
+        final Map<String, Response> responseMap = new HashMap<>();
+        final Map<String, Contract> contractMap = new HashMap<>();
+        final Map<String, Event> eventMap = new HashMap<>();
 
         assert businessModel != null;
 
-        businessModel.getEntities().forEach(businessEntity -> {
-            entityMap.put(businessEntity.getId(), businessEntity);
-        });
+        // add all components to hash maps (support further mappings)
+        businessModel.getEntities().forEach(entity -> entityMap.put(entity.getName(), entity));
+        businessModel.getRequests().forEach(request -> requestMap.put(request.getName(), request));
+        businessModel.getResponses().forEach(response -> responseMap.put(response.getName(), response));
+        businessModel.getEvents().forEach(event -> eventMap.put(event.getName(), event));
 
-        entityMap.values().forEach(businessEntity -> {
-            businessEntity.getFields().stream().filter(field -> !Constants.BASE_TYPES.contains(field.getType())).forEach(field -> field.setEntity(entityMap.get(field.getType())));
-        });
+        entityMap.values().forEach(entity -> entity.getFields().forEach(field -> {
+            Constants.FIELD_TYPE type = Helpers.extractType(field.getTypeRef());
+            if (type == Constants.FIELD_TYPE.ENTITY) field.setComponent(entityMap.get(Helpers.extractName(field.getTypeRef())));
+        }));
 
-        businessModel.getRequests().forEach(request -> {
-            request.getFields().stream().filter(field -> !Constants.BASE_TYPES.contains(field.getType())).forEach(field -> field.setEntity(entityMap.get(field.getType())));
-            requestMap.put(request.getId(), request);
-        });
+        eventMap.values().forEach(event -> event.getFields().forEach(field -> {
+            Constants.FIELD_TYPE type = Helpers.extractType(field.getTypeRef());
+            if (type == Constants.FIELD_TYPE.ENTITY) field.setComponent(entityMap.get(Helpers.extractName(field.getTypeRef())));
+        }));
 
-        businessModel.getResponses().forEach(response -> {
-            response.getFields().stream().filter(field -> !Constants.BASE_TYPES.contains(field.getType())).forEach(field -> field.setEntity(entityMap.get(field.getType())));
-            responseMap.put(response.getId(), response);
-        });
+        requestMap.values().forEach(request -> request.getFields().forEach(field -> {
+            Constants.FIELD_TYPE type = Helpers.extractType(field.getTypeRef());
+            if (type == Constants.FIELD_TYPE.ENTITY) field.setComponent(entityMap.get(Helpers.extractName(field.getTypeRef())));
+        }));
 
-        businessModel.getEvents().forEach(event -> {
-            event.getFields().stream().filter(field -> !Constants.BASE_TYPES.contains(field.getType())).forEach(field -> field.setEntity(entityMap.get(field.getType())));
-            BusinessEntity entity = entityMap.get(event.getEntityId());
-            event.setEventGroup(entity.getName());
-            entity.addEvent(event);
-            eventMap.put(event.getId(), event);
-        });
+        responseMap.values().forEach(response -> response.getFields().forEach(field -> {
+            Constants.FIELD_TYPE type = Helpers.extractType(field.getTypeRef());
+            if (type == Constants.FIELD_TYPE.ENTITY) field.setComponent(entityMap.get(Helpers.extractName(field.getTypeRef())));
+        }));
 
-        businessModel.getContracts().forEach(businessContract -> {
-            businessContract.setEntity(entityMap.get(businessContract.getEntityId()));
+        businessModel.getContracts().forEach(contract -> {
+            contract.setEntity(entityMap.get(Helpers.extractName(contract.getEntityRef())));
 
-            if (businessContract.getHandler().getType().equals(Constants.EVENT_HANDLER_TYPE)) {
-                businessContract.setRequest(eventMap.get(businessContract.getRequestId()));
-            } else {
-                businessContract.setRequest(requestMap.get(businessContract.getRequestId()));
-                businessContract.setResponse(responseMap.get(businessContract.getResponseId()));
+            Constants.FIELD_TYPE consumesType = Helpers.extractType(contract.getConsumesRef());
+
+            switch (consumesType) {
+                case REQUEST: contract.setConsumes(requestMap.get(Helpers.extractName(contract.getConsumesRef()))); break;
+                case EVENT: contract.setConsumes(eventMap.get(Helpers.extractName(contract.getConsumesRef()))); break;
             }
 
-            businessContract.getEventIds().forEach(id -> {
-                businessContract.addEvent(eventMap.get(id));
-            });
-            contractMap.put(businessContract.getId(), businessContract);
-        });
+            contract.getProducesOnSuccessRefs().forEach(ref -> {
+                Constants.FIELD_TYPE producesType = Helpers.extractType(contract.getConsumesRef());
 
-        businessModel.getServers().forEach(businessServer -> {
-            businessServer.getContractIds().forEach(id -> {
-                businessServer.addContract(contractMap.get(id));
+                getCommunicationObject(requestMap, eventMap, contract, producesType);
             });
+
+            contract.getProducesOnErrorRefs().forEach(ref -> {
+                Constants.FIELD_TYPE producesType = Helpers.extractType(contract.getConsumesRef());
+
+                getCommunicationObject(requestMap, eventMap, contract, producesType);
+            });
+
+            contractMap.put(contract.getName(), contract);
         });
 
         return businessModel;
@@ -97,5 +101,12 @@ public class DefaultModelReader implements ModelReader {
 
     public MicroServiceModel readMicroServiceModel(File file) {
         throw new UnsupportedOperationException();
+    }
+
+    private void getCommunicationObject(Map<String, Request> requestMap, Map<String, Event> eventMap, Contract contract, Constants.FIELD_TYPE producesType) {
+        switch (producesType) {
+            case RESPONSE: contract.addProducesOnSuccess(requestMap.get(Helpers.extractName(contract.getConsumesRef()))); break;
+            case EVENT: contract.addProducesOnSuccess(eventMap.get(Helpers.extractName(contract.getConsumesRef()))); break;
+        }
     }
 }

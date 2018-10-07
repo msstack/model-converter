@@ -1,35 +1,41 @@
 {
-  "version": "0.0.1",
+  "schema_version": "0.0.3",
   "entities": [
     {
-      "id": "en1",
       "name": "item",
       "fields": [
         {
           "name": "item_code",
-          "type": "string"
+          "type": "string",
+          "constraints": ["NOT_NULL"]
         },
         {
           "name": "name",
-          "type": "string"
-        },
-        {
-          "name": "quantity",
-          "type": "integer"
-        },
-        {
-          "name": "unit_price",
-          "type": "double"
-        },
-        {
-          "name": "price",
-          "type": "double"
+          "type": "string",
+          "constraints": ["NOT_NULL"]
         }
       ]
     },
     {
-      "id": "en2",
       "name": "order",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "string",
+          "constraints": ["NOT_NULL"]
+        },
+        {
+          "name": "items",
+          "type": "list<{ref:entities#item}>",
+          "constraints": ["NOT_NULL"]
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "order_created",
+      "entity": "{ref:entities#order}",
       "fields": [
         {
           "name": "order_id",
@@ -38,149 +44,112 @@
         {
           "name": "customer_id",
           "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "order_validated",
+      "entity": "{ref:entities#order}",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "string"
         },
         {
-          "name": "payment",
-          "type": "double"
-        },
+          "name": "status",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "order_accepted",
+      "entity": "{ref:entities#order}",
+      "fields": [
         {
-          "name": "items",
-          "type": "en1",
-          "array": true
+          "name": "order_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "order_rejected",
+      "entity": "{ref:entities#order}",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "string"
         }
       ]
     }
   ],
-  "events": [
-    {
-      "id": "ev1",
-      "name": "order_created",
-      "entity_id": "en2"
-    },
-    {
-      "id": "ev2",
-      "name": "order_item_added",
-      "entity_id": "en2"
-    },
-    {
-      "id": "ev3",
-      "name": "order_finalized",
-      "entity_id": "en2"
-    },
-    {
-      "id": "ev4",
-      "name": "item_created",
-      "entity_id": "en1"
-    }
-  ],
-  "contracts": [
-    {
-      "id": "cn1",
-      "entity_id": "en2",
-      "handler": {
-        "type": "command",
-        "name": "create_order"
-      },
-      "request_id": "req1",
-      "response_id": "res1",
-      "event_ids": [
-        "ev1"
-      ]
-    },
-    {
-      "id": "cn2",
-      "entity_id": "en2",
-      "handler": {
-        "type": "command",
-        "name": "add_order_item"
-      },
-      "request_id": "req1",
-      "response_id": "res1",
-      "event_ids": [
-        "ev2"
-      ]
-    },
-    {
-      "id": "cn3",
-      "entity_id": "en2",
-      "handler": {
-        "type": "command",
-        "name": "finalize_order"
-      },
-      "request_id": "req1",
-      "response_id": "res1",
-      "event_ids": [
-        "ev3"
-      ]
-    },
-    {
-      "id": "cn4",
-      "entity_id": "en1",
-      "handler": {
-        "type": "command",
-        "name": "create_item"
-      },
-      "request_id": "req1",
-      "response_id": "res1",
-      "event_ids": [
-        "ev4"
-      ]
-    },
-    {
-      "id": "cn5",
-      "entity_id": "en2",
-      "handler": {
-        "type": "event",
-        "name": "order_finalized"
-      },
-      "request_id": "ev3",
-      "event_ids": []
-    }
-  ],
   "requests": [
     {
-      "id": "req1",
-      "name": "generic_command",
-      "type": "command",
-      "fields": []
-    },
-    {
-      "id": "req2",
-      "name": "generic_query",
-      "type": "query",
-      "fields": []
+      "name": "create_order",
+      "fields": [
+        {
+          "name": "customer_id",
+          "type": "string"
+        }
+      ]
     }
   ],
   "responses": [
     {
-      "id": "res1",
-      "name": "generic_command",
-      "fields": []
+      "name": "order_accepted",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "string"
+        }
+      ]
     },
     {
-      "id": "res2",
-      "name": "generic_query",
-      "fields": []
+      "name": "order_rejected",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "string"
+        },
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ]
     }
   ],
-  "servers": [
+  "contracts": [
     {
-      "id": "sv1",
-      "name": "order",
-      "contract_ids": [
-        "cn1",
-        "cn2",
-        "cn3",
-        "cn5"
-      ]
+      "name": "create_order",
+      "description": "creates an order in pending state",
+      "entity": "{ref:entities#order}",
+      "type": "COMMAND",
+      "consumes": "{ref:requests#create_order}",
+      "produces": {
+        "on_success": ["{ref:events#order_created}"],
+        "on_failure": []
+      }
     },
     {
-      "id": "sv2",
-      "name": "item",
-      "contract_ids": [
-        "cn4",
-        "cn5"
-      ]
+      "name": "validate_order",
+      "description": "check if the order is valid",
+      "entity": "{ref:entities#order}",
+      "type": "EVENT",
+      "consumes": "{ref:events#order_created}",
+      "produces": {
+        "on_success": ["{ref:events#order_validated}"],
+        "on_failure": []
+      }
+    },
+    {
+      "name": "finalize_order",
+      "description": "complete creation of order",
+      "entity": "{ref:entities#order}",
+      "type": "EVENT",
+      "consumes": "{ref:events#order_validated}",
+      "produces": {
+        "on_success": ["{ref:events#order_accepted}", "{ref:responses#order_accepted}"],
+        "on_failure": ["{ref:events#order_rejected}", "{ref:responses#order_rejected}"]
+      }
     }
   ]
 }

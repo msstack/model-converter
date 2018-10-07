@@ -1,4 +1,4 @@
-package com.grydtech.msstack.modelconverter.common;
+package com.grydtech.msstack.modelconverter.models;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -6,5 +6,5 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public abstract class Model {
-    private String version;
+    private String schemaVersion;
 }
