@@ -20,9 +20,9 @@ public final class Contract extends ModelComponent {
     @JsonProperty("consumes")
     private String consumesRef;
     @JsonIgnore
-    private final List<String> producesOnSuccessRefs = new ArrayList<>();
+    private List<String> producesOnSuccessRefs;
     @JsonIgnore
-    private final List<String> producesOnErrorRefs = new ArrayList<>();
+    private List<String> producesOnErrorRefs;
 
     @JsonIgnore
     private Entity entity;
@@ -34,9 +34,17 @@ public final class Contract extends ModelComponent {
     private final List<Communication> producesOnError = new ArrayList<>();
 
     @JsonProperty("produces")
-    private void unpackProduces(Map<String, List<String>> produces) {
-        producesOnSuccessRefs.addAll(produces.get("on_success"));
-        producesOnErrorRefs.addAll(produces.get("on_failure"));
+    private Map<String, Object> packProduces() {
+        Map<String, Object> produces = new HashMap<>();
+        produces.put("onSuccess", this.producesOnSuccessRefs);
+        produces.put("onError", this.producesOnErrorRefs);
+        return produces;
+    }
+
+    @JsonProperty("produces")
+    private void unpackProduces(Map<String, Object> produces) {
+        producesOnSuccessRefs = Arrays.asList((String[]) produces.get("onSuccess"));
+        producesOnErrorRefs = Arrays.asList((String[]) produces.get("onError"));
     }
 
     public void addProducesOnSuccess(Communication communication) {
