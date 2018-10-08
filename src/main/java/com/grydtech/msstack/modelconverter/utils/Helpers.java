@@ -5,6 +5,7 @@ import com.grydtech.msstack.modelconverter.components.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +14,6 @@ public final class Helpers {
     private Helpers() {
     }
 
-    // recursively search for entities (sub entities) and create class schemas
     public static Collection<Entity> extractEntities(Collection<Entity> baseEntities) {
         final List<Entity> entities = new ArrayList<>(baseEntities);
 
@@ -107,6 +107,29 @@ public final class Helpers {
         } else {
             return ref;
         }
+    }
 
+    public static Communication getCommunicationObject(Map<String, Request> requestMap, Map<String, Response> responseMap, Map<String, Event> eventMap, String ref) {
+        Constants.FIELD_TYPE type = extractType(ref);
+
+        switch (type) {
+            case REQUEST: return requestMap.get(extractName(ref));
+            case RESPONSE: return responseMap.get(extractName(ref));
+            case EVENT: return eventMap.get(extractName(ref));
+            default: return null;
+        }
+    }
+
+    public static void fillFieldProperties(Map<String, Entity> entityMap ,Map<String, Request> requestMap, Map<String, Response> responseMap, Map<String, Event> eventMap, Field field) {
+        field.setType(extractType(field.getTypeRef()));
+        field.setMultiplicity(extractMultiplicity(field.getTypeRef()));
+        String componentName = extractName(field.getTypeRef());
+
+        switch (field.getType()) {
+            case ENTITY: field.setComponent(entityMap.get(componentName)); break;
+            case REQUEST: field.setComponent(requestMap.get(componentName)); break;
+            case RESPONSE: field.setComponent(responseMap.get(componentName)); break;
+            case EVENT: field.setComponent(eventMap.get(componentName)); break;
+        }
     }
 }
