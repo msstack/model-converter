@@ -13,7 +13,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public final class Entity extends ModelComponent {
-    @JsonProperty("field")
     private List<Field> fields;
 
     @JsonIgnore
