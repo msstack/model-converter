@@ -14,7 +14,7 @@ public final class Field {
     private String name;
     @JsonProperty("type")
     private String typeRef;
-    private List<String> constraints;
+    private List<Constants.CONSTRAINT> constraints;
 
     @JsonIgnore
     private Constants.FIELD_TYPE type;
