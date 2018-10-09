@@ -34,7 +34,7 @@ public final class Contract extends ModelComponent {
     private final List<Communication> producesOnError = new ArrayList<>();
 
     @JsonProperty("produces")
-    private void unpackProduces(Map<String, List<String>> produces) {
+    public void unpackProduces(Map<String, List<String>> produces) {
         producesOnSuccessRefs.addAll(produces.get("on_success"));
         producesOnErrorRefs.addAll(produces.get("on_failure"));
     }

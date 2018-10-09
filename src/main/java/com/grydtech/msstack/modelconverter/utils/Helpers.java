@@ -130,6 +130,7 @@ public final class Helpers {
             case REQUEST: field.setComponent(requestMap.get(componentName)); break;
             case RESPONSE: field.setComponent(responseMap.get(componentName)); break;
             case EVENT: field.setComponent(eventMap.get(componentName)); break;
+            default: field.setComponent(null);
         }
     }
 }
