@@ -1,7 +1,7 @@
 package com.grydtech.msstack.modelconverter.services;
 
-import com.grydtech.msstack.modelconverter.business.BusinessModel;
-import com.grydtech.msstack.modelconverter.microservice.MicroServiceModel;
+import com.grydtech.msstack.modelconverter.models.BusinessModel;
+import com.grydtech.msstack.modelconverter.models.MicroServiceModel;
 import com.grydtech.msstack.modelconverter.services.impl.DefaultModelConverter;
 import com.grydtech.msstack.modelconverter.services.impl.DefaultModelReader;
 import org.junit.Assert;

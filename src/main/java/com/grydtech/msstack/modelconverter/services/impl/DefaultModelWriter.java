@@ -3,7 +3,7 @@ package com.grydtech.msstack.modelconverter.services.impl;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.grydtech.msstack.modelconverter.common.Model;
+import com.grydtech.msstack.modelconverter.models.Model;
 import com.grydtech.msstack.modelconverter.services.ModelWriter;
 
 import java.io.File;

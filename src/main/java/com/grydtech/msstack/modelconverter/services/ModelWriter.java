@@ -1,6 +1,6 @@
 package com.grydtech.msstack.modelconverter.services;
 
-import com.grydtech.msstack.modelconverter.common.Model;
+import com.grydtech.msstack.modelconverter.models.Model;
 
 import java.io.File;
 

@@ -3,15 +3,11 @@ package com.grydtech.msstack.modelconverter.services.impl;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.grydtech.msstack.modelconverter.business.contract.BusinessContract;
-import com.grydtech.msstack.modelconverter.business.communication.BusinessEvent;
-import com.grydtech.msstack.modelconverter.business.entity.BusinessEntity;
-import com.grydtech.msstack.modelconverter.business.BusinessModel;
-import com.grydtech.msstack.modelconverter.business.communication.BusinessRequest;
-import com.grydtech.msstack.modelconverter.business.communication.BusinessResponse;
-import com.grydtech.msstack.modelconverter.common.Constants;
-import com.grydtech.msstack.modelconverter.microservice.MicroServiceModel;
+import com.grydtech.msstack.modelconverter.components.*;
+import com.grydtech.msstack.modelconverter.models.BusinessModel;
+import com.grydtech.msstack.modelconverter.models.MicroServiceModel;
 import com.grydtech.msstack.modelconverter.services.ModelReader;
+import com.grydtech.msstack.modelconverter.utils.Helpers;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,60 +32,42 @@ public class DefaultModelReader implements ModelReader {
             e.printStackTrace();
         }
 
-        final Map<String, BusinessEntity> entityMap = new HashMap<>();
-        final Map<String, BusinessRequest> requestMap = new HashMap<>();
-        final Map<String, BusinessResponse> responseMap = new HashMap<>();
-        final Map<String, BusinessContract> contractMap = new HashMap<>();
-        final Map<String, BusinessEvent> eventMap = new HashMap<>();
+        final Map<String, Entity> entityMap = new HashMap<>();
+        final Map<String, Request> requestMap = new HashMap<>();
+        final Map<String, Response> responseMap = new HashMap<>();
+        final Map<String, Event> eventMap = new HashMap<>();
 
         assert businessModel != null;
 
-        businessModel.getEntities().forEach(businessEntity -> {
-            entityMap.put(businessEntity.getId(), businessEntity);
+        // add all components to hash maps (support further mappings)
+        businessModel.getEntities().forEach(entity -> entityMap.put(entity.getName(), entity));
+        businessModel.getRequests().forEach(request -> requestMap.put(request.getName(), request));
+        businessModel.getResponses().forEach(response -> responseMap.put(response.getName(), response));
+        businessModel.getEvents().forEach(event -> eventMap.put(event.getName(), event));
+
+        // inject field properties
+        entityMap.values().forEach(entity -> {
+            entity.getFields().forEach(field -> Helpers.fillFieldProperties(entityMap, requestMap, responseMap, eventMap, field));
+        });
+        eventMap.values().forEach(event -> {
+            event.getFields().forEach(field -> Helpers.fillFieldProperties(entityMap, requestMap, responseMap, eventMap, field));
+        });
+        requestMap.values().forEach(request -> {
+            request.getFields().forEach(field -> Helpers.fillFieldProperties(entityMap, requestMap, responseMap, eventMap, field));
+        });
+        responseMap.values().forEach(response -> {
+            response.getFields().forEach(field -> Helpers.fillFieldProperties(entityMap, requestMap, responseMap, eventMap, field));
         });
 
-        entityMap.values().forEach(businessEntity -> {
-            businessEntity.getFields().stream().filter(field -> !Constants.BASE_TYPES.contains(field.getType())).forEach(field -> field.setEntity(entityMap.get(field.getType())));
-        });
+        // add events inside entity
+        eventMap.values().forEach(event -> entityMap.get(Helpers.extractName(event.getEntityRef())).addEvent(event));
 
-        businessModel.getRequests().forEach(request -> {
-            request.getFields().stream().filter(field -> !Constants.BASE_TYPES.contains(field.getType())).forEach(field -> field.setEntity(entityMap.get(field.getType())));
-            requestMap.put(request.getId(), request);
-        });
-
-        businessModel.getResponses().forEach(response -> {
-            response.getFields().stream().filter(field -> !Constants.BASE_TYPES.contains(field.getType())).forEach(field -> field.setEntity(entityMap.get(field.getType())));
-            responseMap.put(response.getId(), response);
-        });
-
-        businessModel.getEvents().forEach(event -> {
-            event.getFields().stream().filter(field -> !Constants.BASE_TYPES.contains(field.getType())).forEach(field -> field.setEntity(entityMap.get(field.getType())));
-            BusinessEntity entity = entityMap.get(event.getEntityId());
-            event.setEventGroup(entity.getName());
-            entity.addEvent(event);
-            eventMap.put(event.getId(), event);
-        });
-
-        businessModel.getContracts().forEach(businessContract -> {
-            businessContract.setEntity(entityMap.get(businessContract.getEntityId()));
-
-            if (businessContract.getHandler().getType().equals(Constants.EVENT_HANDLER_TYPE)) {
-                businessContract.setRequest(eventMap.get(businessContract.getRequestId()));
-            } else {
-                businessContract.setRequest(requestMap.get(businessContract.getRequestId()));
-                businessContract.setResponse(responseMap.get(businessContract.getResponseId()));
-            }
-
-            businessContract.getEventIds().forEach(id -> {
-                businessContract.addEvent(eventMap.get(id));
-            });
-            contractMap.put(businessContract.getId(), businessContract);
-        });
-
-        businessModel.getServers().forEach(businessServer -> {
-            businessServer.getContractIds().forEach(id -> {
-                businessServer.addContract(contractMap.get(id));
-            });
+        // inject contract properties
+        businessModel.getContracts().forEach(contract -> {
+            contract.setEntity(entityMap.get(Helpers.extractName(contract.getEntityRef())));
+            contract.setConsumes(Helpers.getCommunicationObject(requestMap, responseMap, eventMap, contract.getConsumesRef()));
+            contract.getProducesOnSuccessRefs().forEach(ref -> contract.addProducesOnSuccess(Helpers.getCommunicationObject(requestMap, responseMap, eventMap, ref)));
+            contract.getProducesOnErrorRefs().forEach(ref -> contract.addProducesOnError(Helpers.getCommunicationObject(requestMap, responseMap, eventMap, ref)));
         });
 
         return businessModel;
